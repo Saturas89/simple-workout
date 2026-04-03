@@ -10,42 +10,55 @@
 
 Technische Implementation der CI/CD Pipeline basierend auf REQ-005.
 
+**AUSGEWÄHLTE TOOLS:**
+- **CI/CD:** GitHub Actions
+- **Hosting:** Vercel
+
 **Anforderungen:** Siehe `/docs/requirements/REQ-005-ci-cd-pipeline.md`
 
 ---
 
-## 1. CI/CD Platform Optionen
+## 1. Kombinierte Setup: GitHub Actions + Vercel
 
-### Option A: GitHub Actions (Empfohlen für GitHub)
+### GitHub Actions
 
 ```yaml
 Kosten: FREE (bis 2000 Minuten/Monat)
+Einsatz: Build, Test, Quality Checks
 Vorteile:
-- Native GitHub Integration
-- Kein Setup außerhalb GitHub nötig
-- Kostenlos für Open Source
-- Gutes Eco-System
+✓ Native GitHub Integration
+✓ Kein Setup außerhalb GitHub
+✓ Kostenlos für Open Source
+✓ Vollständige Control über Pipeline
 ```
 
-### Option B: GitLab CI/CD
+### Vercel
 
 ```yaml
-Kosten: FREE (bis 400 Minuten/Monat)
+Kosten: FREE Tier für einfache Apps
+Einsatz: Hosting & Auto-Deploy
 Vorteile:
-- Eingebaut in GitLab
-- Kostenlos für Open Source
-- Sehr flexibel
+✓ Automatischer Deploy bei Git Push
+✓ Preview URLs für Pull Requests
+✓ Optimiert für Next.js/React
+✓ HTTPS automatisch
+✓ Global CDN
 ```
 
-### Option C: Vercel/Netlify
+### Kombination
 
-```yaml
-Kosten: FREE Tier verfügbar
-Vorteile:
-- Auto-Deploy mit Git Push
-- Preview URLs
-- Optimiert für Next.js/Static
-- Einfache Konfiguration
+```
+GitHub Repository
+        ↓
+   (Git Push)
+        ↓
+GitHub Actions:
+  - Build, Test, Security, Performance
+        ↓ (if all pass)
+     Vercel:
+       - Deploy
+       - Health Check
+       - Live URL
 ```
 
 ---

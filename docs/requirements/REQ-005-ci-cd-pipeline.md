@@ -86,12 +86,18 @@ Automatisierte Pipeline zum Bauen, Testen und Deployen der Anwendung. Bei jedem 
 - [ ] **NFR-2.3:** Retry-Mechanismus bei temporären Fehlern
 - [ ] **NFR-2.4:** Cache für Dependencies (schnellerer Build)
 
-### 3.3 Sicherheit
+### 3.3 Sicherheit & Secrets Management
 
-- [ ] **NFR-3.1:** Secrets (API Keys, Tokens) sind sicher gespeichert
-- [ ] **NFR-3.2:** Secrets nicht in Logs ausgegeben
-- [ ] **NFR-3.3:** Nur autorisierte Personen können deployen
-- [ ] **NFR-3.4:** Audit Trail für alle Deployments
+**KRITISCH: Niemals Passwörter oder API Keys in Code committen!**
+
+- [ ] **NFR-3.1:** ⚠️ **KEIN Passwort, API Key, Token oder Secret darf in Git-Repository sein**
+- [ ] **NFR-3.2:** Alle Secrets werden in GitHub Secrets Management gespeichert (nicht im Code)
+- [ ] **NFR-3.3:** `.env` Datei ist in `.gitignore` (wird nicht committed)
+- [ ] **NFR-3.4:** Secrets werden nur zur Laufzeit in Pipeline injiziert
+- [ ] **NFR-3.5:** Secrets nicht in Logs ausgegeben (GitHub Actions maskiert automatisch)
+- [ ] **NFR-3.6:** Nur autorisierte Personen können auf GitHub Secrets zugreifen
+- [ ] **NFR-3.7:** Audit Trail für alle Deployments verfügbar
+- [ ] **NFR-3.8:** Secret Rotation implementiert (regelmäßiger Wechsel)
 
 ### 3.4 Monitoring & Alerting
 
@@ -110,13 +116,17 @@ Automatisierte Pipeline zum Bauen, Testen und Deployen der Anwendung. Bei jedem 
 
 ## 4. Framework & Technologie Anforderungen
 
-### 4.1 CI/CD System Anforderungen
+### 4.1 CI/CD System: GitHub Actions (Vorgegeben)
 
-- [ ] **FW-1.1:** Unterstützt Git Integration (GitHub, GitLab, etc.)
-- [ ] **FW-1.2:** Konfigurierbar via Code (YAML, JSON)
+**GitHub Actions wird als CI/CD System verwendet.**
+
+- [ ] **FW-1.1:** GitHub Actions nativ mit GitHub Repository integriert
+- [ ] **FW-1.2:** Workflows konfigurierbar via `.github/workflows/*.yml` (YAML)
 - [ ] **FW-1.3:** Parallele Job-Ausführung möglich
-- [ ] **FW-1.4:** Workflow Triggers konfigurierbar (Push, Pull Request, Schedule)
-- [ ] **FW-1.5:** Gute Logging & Debugging Funktionen
+- [ ] **FW-1.4:** Triggers: Push, Pull Request, Manual Dispatch
+- [ ] **FW-1.5:** Gutes Logging & Debugging in GitHub UI
+- [ ] **FW-1.6:** GitHub Secrets für sichere Passwort-Verwaltung
+- [ ] **FW-1.7:** Status Checks in Pull Requests integriert
 
 ### 4.2 Build Anforderungen
 
@@ -133,13 +143,19 @@ Automatisierte Pipeline zum Bauen, Testen und Deployen der Anwendung. Bei jedem 
 - [ ] **FW-3.4:** Test-Parallelisierung möglich
 - [ ] **FW-3.5:** Browser-basierte Tests möglich
 
-### 4.4 Deployment Anforderungen
+### 4.4 Deployment: Vercel (Vorgegeben)
 
-- [ ] **FW-4.1:** Deployment zu mindestens 3 Hosting-Anbietern möglich
-- [ ] **FW-4.2:** Environment-Variablen beim Deployment setzbar
-- [ ] **FW-4.3:** Rollback-Funktionalität vorhanden
-- [ ] **FW-4.4:** Health Check URL konfigurierbar
-- [ ] **FW-4.5:** Preview URLs vor Production-Deploy
+**Vercel wird als Hosting-Anbieter verwendet.**
+
+- [ ] **FW-4.1:** Vercel Integration mit GitHub Actions möglich
+- [ ] **FW-4.2:** Environment-Variablen in Vercel Dashboard setzbar
+- [ ] **FW-4.3:** Automatischer Deploy bei Git Push zu main
+- [ ] **FW-4.4:** Preview Deployments für Pull Requests
+- [ ] **FW-4.5:** Production URL wird nach Deploy angezeigt
+- [ ] **FW-4.6:** Rollback zu vorherigen Version möglich
+- [ ] **FW-4.7:** Health Checks/Monitoring in Vercel verfügbar
+- [ ] **FW-4.8:** HTTPS automatisch (SSL Certificate)
+- [ ] **FW-4.9:** Kostenlos für einfache Apps (Free Tier)
 
 ### 4.5 Monitoring & Alerting Anforderungen
 
@@ -147,6 +163,19 @@ Automatisierte Pipeline zum Bauen, Testen und Deployen der Anwendung. Bei jedem 
 - [ ] **FW-5.2:** Webhook Support
 - [ ] **FW-5.3:** Uptime Monitoring
 - [ ] **FW-5.4:** Error Tracking Integration (Sentry, etc.)
+
+---
+
+## 4.6 Secrets Management
+
+**WICHTIG: Sicherer Umgang mit Passwörtern und API Keys**
+
+- [ ] **FW-5.1:** GitHub Secrets werden für alle sensitive Daten verwendet
+- [ ] **FW-5.2:** `.env` Datei ist niemals im Repository (in `.gitignore`)
+- [ ] **FW-5.3:** Secrets werden nur zur Pipeline-Laufzeit injiziert
+- [ ] **FW-5.4:** Vercel Environment Variables sind von GitHub Secrets getrennt
+- [ ] **FW-5.5:** Secret Names sind sprechend (z.B. `DATABASE_PASSWORD`)
+- [ ] **FW-5.6:** Keine Default/Test Passwörter in Code
 
 ---
 
