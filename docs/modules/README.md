@@ -31,9 +31,12 @@ Um ein neues Modul hinzuzufügen:
 
 | Modulname | Beschreibung | Status | Dateien |
 |-----------|------------|--------|---------|
-| [Template] | Vorlage für neue Module | 🟢 DRAFT | [README](./MODULE_TEMPLATE/README.md) • [Spec](./MODULE_TEMPLATE/SPECIFICATION.md) • [Req](./MODULE_TEMPLATE/REQUIREMENTS.md) • [Arch](./MODULE_TEMPLATE/ARCHITECTURE.md) |
-
-*Hinweis: Das obige Beispiel ist eine Vorlage. Ersetze es mit echten Modulen.*
+| **Core** | PWA Foundation, Service Worker, Layout | 🟢 DRAFT | [README](./core/README.md) • [Spec](./core/SPECIFICATION.md) • [Req](./core/REQUIREMENTS.md) • [Arch](./core/ARCHITECTURE.md) |
+| **Workout** | Trainingsplan Management & Übungen | 🟢 DRAFT | [README](./workout/README.md) • [Spec](./workout/SPECIFICATION.md) • [Req](./workout/REQUIREMENTS.md) • [Arch](./workout/ARCHITECTURE.md) |
+| **Data Layer** | Storage, Synchronisation, Backends | 🟢 DRAFT | [README](./data/README.md) • [Spec](./data/SPECIFICATION.md) • [Req](./data/REQUIREMENTS.md) • [Arch](./data/ARCHITECTURE.md) |
+| **UI** | Components, Design System, Responsive Design | 🟢 DRAFT | [README](./ui/README.md) • [Spec](./ui/SPECIFICATION.md) • [Req](./ui/REQUIREMENTS.md) • [Arch](./ui/ARCHITECTURE.md) |
+| **Offline** | Service Worker, Caching, Offline-First | 🟢 DRAFT | [README](./offline/README.md) • [Spec](./offline/SPECIFICATION.md) • [Req](./offline/REQUIREMENTS.md) • [Arch](./offline/ARCHITECTURE.md) |
+| **MODULE_TEMPLATE** | Vorlage für neue Module | 🟢 DRAFT | [README](./MODULE_TEMPLATE/README.md) • [Spec](./MODULE_TEMPLATE/SPECIFICATION.md) • [Req](./MODULE_TEMPLATE/REQUIREMENTS.md) • [Arch](./MODULE_TEMPLATE/ARCHITECTURE.md) |
 
 ---
 
@@ -67,25 +70,43 @@ Legend:
 
 ## 🔄 Modul-Abhängigkeiten
 
-[Hier können Abhängigkeitsdiagramme oder -tabellen eingefügt werden]
+```
+┌─────────────────────────────────────┐
+│   Core (PWA Foundation)             │
+│   - Service Worker                  │
+│   - App Shell                       │
+│   - Responsive Layout               │
+└──────────────┬──────────────────────┘
+               │
+       ┌───────┼────────┬─────────┐
+       ▼       ▼        ▼         ▼
+   ┌────┐  ┌──────┐  ┌────┐  ┌────────┐
+   │Data│  │ UI   │  │Offl│ │Workout │
+   │    │  │      │  │ine │ │        │
+   └────┘  └──────┘  └────┘  └────────┘
+       │       │        │         │
+       └───────┼────────┴─────────┘
+               ▼
+        Workout Management
+```
 
-```
-Module A
-  └─ Module B
-      └─ Module C
-Module D
-  └─ Module C (Shared)
-```
+**Abhängigkeits-Details:**
+- **Core:** Basis für alle anderen Module (keine Abhängigkeiten)
+- **Data:** Hängt von Core ab (für Storage & Caching)
+- **UI:** Hängt von Core ab (für Responsive Design)
+- **Offline:** Hängt von Core ab (für Service Worker)
+- **Workout:** Hängt von Core, Data, UI und Offline ab
 
 ---
 
 ## 📈 Modul-Roadmap
 
-| Phase | Module | Zeitrahmen |
-|-------|--------|-----------|
-| Phase 1 | [Modul 1], [Modul 2] | [Q1 2026] |
-| Phase 2 | [Modul 3], [Modul 4] | [Q2 2026] |
-| Phase 3 | [Modul 5] | [Q3 2026] |
+| Phase | Module | Zeitrahmen | Status |
+|-------|--------|-----------|--------|
+| Phase 1: Foundation | Core, Offline | Q2 2026 | 🟢 Spezifikation in Arbeit |
+| Phase 2: Data & UI | Data, UI | Q2 2026 | 🟢 Spezifikation in Arbeit |
+| Phase 3: Features | Workout Management | Q2-Q3 2026 | 🟢 Anforderungen definiert |
+| Phase 4: Optimierung | Performance, Analytics | Q3 2026 | 🟡 Geplant |
 
 ---
 
