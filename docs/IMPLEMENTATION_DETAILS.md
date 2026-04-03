@@ -1,4 +1,4 @@
-# Implementation Details - Simple Workout
+# Implementation Details - Tech Stack
 
 **Status:** 🟢 DRAFT  
 **Version:** 1.0.0  
@@ -8,9 +8,9 @@
 
 ## 📋 Übersicht
 
-Dieses Dokument beschreibt die **technischen Implementation-Details** - unabhängig von den eigentlichen Anforderungen. Diese Details KÖNNEN sich ändern, ohne die Anforderungen zu ändern.
+Technische Implementation Details - unabhängig von den Anforderungen.
 
-**Anforderungen:** Siehe `/docs/requirements/`
+**Anforderungen:** Siehe `/docs/requirements/REQ-00X-*-clean.md`
 
 ---
 
@@ -19,423 +19,328 @@ Dieses Dokument beschreibt die **technischen Implementation-Details** - unabhän
 ### Frontend
 
 ```
-Framework:       React 18+ / Vue 3+ / Svelte
-Build Tool:      Vite / Next.js
-State Management: Redux Toolkit / Zustand / Pinia
-Styling:         Tailwind CSS / CSS Modules
-UI Components:   Custom + Headless UI
-Testing:         Vitest / Jest + React Testing Library
-E2E Tests:       Cypress / Playwright
+Framework:       React 18+ oder Vue 3+ oder Svelte
+Build Tool:      Vite
+State Management: Zustand / Pinia / Redux Toolkit
+Styling:         Tailwind CSS
+Testing:         Vitest (Unit) + Cypress (E2E)
+Type Safety:     TypeScript
 ```
 
-### Backend
+### Backend (Optional, für später)
 
 ```
-API:             Node.js (Express) / Python (Django/FastAPI) / Go / Rust
+API:             Node.js (Express) / Python (FastAPI)
 Database:        PostgreSQL / MongoDB
-Cache:           Redis
-Message Queue:   Bull / Celery (optional)
-Authentication:  Passport.js / Django Auth / Ory
+Authentication:  JWT / OAuth2
 ```
 
-### DevOps
+### Hosting & Deployment
 
 ```
-Hosting:         Vercel / Netlify / AWS / Google Cloud / Self-hosted
-Database:        Managed (AWS RDS, MongoDB Atlas) oder Self-hosted
-Storage:         S3 / Google Cloud Storage (für Backups)
-CI/CD:           GitHub Actions / GitLab CI / Jenkins
-Monitoring:      Sentry / DataDog / New Relic
+Hosting:         Vercel
+CI/CD:           Vercel CI (built-in)
+Environment:     vercel.json
+Monitoring:      Vercel Analytics
 ```
 
 ---
 
-## 2. Data Caching Strategy
+## 2. Vercel Setup (vercel.json)
 
-### Service Worker Caching
-
-```javascript
-// Cache-First Strategy für Static Assets
-- HTML/CSS/JS files
-- Icons, Fonts
-- Images (unter 1MB)
-
-// Network-First für API Requests
-- Daten-APIs
-- User Endpoints
-- Sync Endpoints
-
-// Stale-While-Revalidate für Images
-- Große Bilder (1MB+)
-- Workout Icons
-```
-
-### Client-Side Caching
-
-```
-LocalStorage:  User Preferences, Auth Token
-IndexedDB:     
-  - workouts Collection
-  - exercises Collection
-  - syncQueue Collection
-  - metadata Collection
-In-Memory:     Current UI State, Temporary Data
-```
-
----
-
-## 3. API Endpoints (Beispiel)
-
-### Authentication
-
-```
-POST   /api/auth/register           # { email, password, name }
-POST   /api/auth/login              # { email, password }
-POST   /api/auth/refresh-token      # { refreshToken }
-POST   /api/auth/logout             # {}
-POST   /api/auth/password-reset     # { email }
-```
-
-### Workouts
-
-```
-GET    /api/workouts                # List alle Workouts
-GET    /api/workouts/:id            # Get spezifischen Workout
-POST   /api/workouts                # Create Workout
-PUT    /api/workouts/:id            # Update Workout
-DELETE /api/workouts/:id            # Delete Workout
-```
-
-### Exercises
-
-```
-GET    /api/workouts/:id/exercises  # List Übungen
-POST   /api/workouts/:id/exercises  # Create Übung
-PUT    /api/exercises/:id           # Update Übung
-DELETE /api/exercises/:id           # Delete Übung
-```
-
-### Sync
-
-```
-POST   /api/sync                    # Batch Sync (offline changes)
-GET    /api/sync/status             # Sync Status
-```
-
----
-
-## 4. Data Models
-
-### Workout Model
-
-```javascript
+```json
 {
-  id: UUID,
-  userId: UUID,
-  title: string,
-  description: string,
-  exercises: Exercise[],
-  createdAt: ISO8601,
-  updatedAt: ISO8601,
-  version: number,  // Für Konflikt-Detection
-  syncStatus: 'synced' | 'pending' | 'conflict'
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }
 ```
 
-### Exercise Model
-
-```javascript
-{
-  id: UUID,
-  workoutId: UUID,
-  name: string,
-  sets: number,
-  reps: number,
-  weight?: number,  // in kg
-  restTime: number, // in seconds
-  notes?: string,
-  order: number,
-  updatedAt: ISO8601
-}
-```
-
-### SyncQueue Model
-
-```javascript
-{
-  id: UUID,
-  type: 'workout' | 'exercise',
-  action: 'create' | 'update' | 'delete',
-  data: any,
-  timestamp: ISO8601,
-  retries: number,
-  lastError?: string
-}
-```
+**Was passiert:**
+1. `npm ci` - Dependencies installieren
+2. `npm run build` - App kompilieren
+3. `npm run test` (optional) - Tests durchführen
+4. Deploy zu Vercel CDN
 
 ---
 
-## 5. Frontend Architecture
-
-### Folder Structure
+## 3. Project Structure
 
 ```
 src/
 ├── components/
-│   ├── mobile/              # Mobile-only Komponenten
-│   │   ├── BottomNav.tsx
-│   │   └── MobileWorkoutList.tsx
-│   ├── desktop/             # Desktop-only Komponenten
-│   │   ├── Sidebar.tsx
-│   │   └── DesktopWorkoutList.tsx
-│   └── shared/              # Shared Komponenten
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       └── FormInput.tsx
+│   ├── mobile/           # Mobile-only Components
+│   ├── desktop/          # Desktop-only Components
+│   └── shared/           # Shared Components
 ├── pages/
-│   ├── WorkoutList.tsx
-│   ├── WorkoutDetail.tsx
-│   ├── AddExercise.tsx
-│   └── NotFound.tsx
+│   ├── index.tsx
+│   ├── workouts/
+│   └── [dynamic]/
 ├── services/
-│   ├── api.ts              # API Calls
-│   ├── storage.ts          # IndexedDB Operations
-│   ├── sync.ts             # Sync Logic
-│   ├── pwa.ts              # PWA Management
-│   └── offline.ts          # Offline Detection
+│   ├── api.ts            # API Calls
+│   ├── storage.ts        # LocalStorage/IndexedDB
+│   └── sync.ts           # Data Sync
 ├── hooks/
 │   ├── useWorkouts.ts
 │   ├── useOffline.ts
 │   └── useSync.ts
 ├── styles/
-│   ├── global.css
-│   ├── breakpoints.css     # Responsive Breakpoints
-│   ├── touch.css           # Touch Optimizations
-│   └── desktop.css         # Desktop Optimizations
+│   ├── globals.css
+│   ├── breakpoints.css
+│   └── components.css
 ├── types/
 │   └── models.ts
-└── manifest.json           # PWA Manifest
-```
-
-### Responsive Breakpoints
-
-```scss
-$mobile:           320px;
-$mobile-landscape: 568px;
-$tablet:           768px;
-$desktop:          1024px;
-$wide:             1440px;
-$ultra-wide:       1920px;
-
-// Media Queries
-@media (max-width: 767px) { /* Mobile */ }
-@media (min-width: 768px) and (max-width: 1023px) { /* Tablet */ }
-@media (min-width: 1024px) { /* Desktop */ }
+└── main.tsx
 ```
 
 ---
 
-## 6. Offline-First Flow
+## 4. Build & Deploy Flow
 
 ```
-┌─────────────────────────────┐
-│  User Action (Create/Edit)  │
-└────────────┬────────────────┘
-             │
-             ▼
-    ┌────────────────┐
-    │ Validate Data  │
-    └────────┬───────┘
-             │
-      ┌──────▼──────┐
-      │   Online?   │
-      └──┬───────┬──┘
-    YES  │       │  NO
-        ▼       ▼
-    ┌──────────────┐      ┌──────────────┐
-    │ POST to API  │      │ Add to Queue │
-    └──┬───────────┘      │ + LocalStore │
-       │                  └──────────────┘
-       ▼
-    ┌──────────────┐
-    │ Update UI    │
-    │ Optimistic   │
-    └──────────────┘
-       │
-       ▼
-    ┌──────────────┐
-    │  Success?    │
-    └──┬────────┬──┘
-      YES      NO
-       │       │
-       ▼       ▼
-    Continue Retry
+Git Push (main)
+       ↓
+Vercel CI:
+  1. npm ci
+  2. npm run build
+  3. npm run test (optional)
+       ↓
+  Falls OK:
+  4. Deploy zu CDN
+  5. Health Check
+       ↓
+✅ App LIVE auf https://simple-workout.vercel.app
 ```
 
 ---
 
-## 7. Caching Strategy Details
+## 5. Scripts (package.json)
 
-### Static Assets (Cache-First)
-
-```
-Request → Check Service Worker Cache
-  ├─ Found → Return from cache (fast!)
-  └─ Not Found → Fetch from network
-                  → Cache for next time
-                  → Return
-```
-
-### API Requests (Network-First)
-
-```
-Request → Try to fetch from network
-  ├─ Success → Cache result
-  │          → Return fresh data
-  └─ Failed → Check Service Worker Cache
-              → Return cached (possibly stale)
-              → If no cache → Error
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --fix",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "cypress run"
+  }
+}
 ```
 
 ---
 
-## 8. Deployment Pipeline
+## 6. Testing Strategy
 
-```
-Git Push
-  ↓
-GitHub Actions / CI
-  ↓
-Run Tests (Unit + E2E)
-  ↓
-Build (npm run build)
-  ↓
-Lighthouse CI (Performance)
-  ↓
-Deploy to Staging
-  ↓
-Test in Staging
-  ↓
-Deploy to Production
-  ↓
-Monitor (Sentry, DataDog)
+### Unit Tests (Vitest)
+
+```typescript
+import { describe, it, expect } from 'vitest'
+
+describe('MyComponent', () => {
+  it('should render', () => {
+    expect(true).toBe(true)
+  })
+})
 ```
 
----
+### E2E Tests (Cypress)
 
-## 9. Browser Storage Breakdown
-
-```
-LocalStorage (5-10MB):
-  ├─ User Token
-  ├─ Preferences
-  └─ App Settings
-
-IndexedDB (unlimited):
-  ├─ workouts (größer)
-  ├─ exercises
-  ├─ syncQueue
-  └─ cache metadata
-
-Service Worker Cache (50MB+):
-  ├─ Static Assets
-  ├─ API Responses
-  └─ Images
+```typescript
+describe('Workout Flow', () => {
+  it('should create workout', () => {
+    cy.visit('/')
+    cy.get('[data-testid="create-btn"]').click()
+    cy.get('[data-testid="workout-name"]').type('Chest Day')
+    cy.get('[data-testid="save-btn"]').click()
+    cy.contains('Chest Day').should('exist')
+  })
+})
 ```
 
 ---
 
-## 10. Error Handling Strategy
+## 7. Responsive Design
 
-```
-API Error
-  ├─ 4xx (Client Error)
-  │   ├─ 400 → Show validation error to user
-  │   ├─ 401 → Redirect to login
-  │   └─ 403 → Show "Access Denied"
-  ├─ 5xx (Server Error)
-  │   ├─ Add to retry queue
-  │   ├─ Show "Trying again..." message
-  │   └─ Retry with exponential backoff
-  └─ Network Error
-      ├─ Check if offline
-      ├─ Add to queue
-      └─ Show "Will sync when online"
-```
+### CSS Breakpoints
 
----
+```css
+/* Mobile First */
+@media (min-width: 768px) {
+  /* Tablet */
+}
 
-## 11. Testing Strategy
+@media (min-width: 1024px) {
+  /* Desktop */
+}
 
-### Unit Tests
-```
-- Service functions (api.ts, storage.ts)
-- Utility functions
-- Individual components
-- Redux/Zustand actions
+@media (min-width: 1440px) {
+  /* Wide Desktop */
+}
 ```
 
-### Integration Tests
-```
-- API + Database interactions
-- Sync logic
-- Offline queue processing
-- Auth flow
-```
+### Component Strategy
 
-### E2E Tests
 ```
-- Workout creation flow (Mobile + Desktop)
-- Offline + Online transitions
-- Sync scenarios
-- Conflict resolution
+Shared Components:
+  - Button, Card, Input (responsive by default)
+
+Mobile Components:
+  - BottomNav, MobileMenu, TouchSwipe
+
+Desktop Components:
+  - Sidebar, DesktopMenu, Keyboard Shortcuts
 ```
 
 ---
 
-## 12. Performance Optimizations
+## 8. Data Storage
+
+### LocalStorage (für Preferences)
+
+```typescript
+// Speichern
+localStorage.setItem('theme', 'dark')
+
+// Laden
+const theme = localStorage.getItem('theme')
+```
+
+### IndexedDB (für Workouts)
+
+```typescript
+const db = await openDB('simple-workout')
+
+// Speichern
+await db.put('workouts', workout)
+
+// Laden
+const workouts = await db.getAll('workouts')
+```
+
+---
+
+## 9. API Integration
+
+### REST API Calls
+
+```typescript
+// services/api.ts
+export async function fetchWorkouts() {
+  const response = await fetch('/api/workouts')
+  return response.json()
+}
+
+export async function createWorkout(workout: Workout) {
+  const response = await fetch('/api/workouts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(workout)
+  })
+  return response.json()
+}
+```
+
+---
+
+## 10. Environment Variables
+
+### Development (.env.local)
+
+```
+VITE_API_URL=http://localhost:3000
+VITE_ENV=development
+```
+
+### Production (Vercel Dashboard)
+
+```
+VITE_API_URL=https://api.simple-workout.com
+VITE_ENV=production
+```
+
+---
+
+## 11. Deployment Checklist
+
+```
+Vor Push zu main:
+  ☐ npm run build (lokal erfolgreich)
+  ☐ npm run test (alle Test pass)
+  ☐ npm run lint (keine Fehler)
+  ☐ .env nicht committed
+  ☐ Secrets nicht im Code
+
+Vercel wird automatisch:
+  ☐ npm ci
+  ☐ npm run build
+  ☐ npm run test
+  ☐ Deploy
+  ☐ Health Check
+```
+
+---
+
+## 12. Monitoring
+
+### Vercel Analytics
+
+```
+Vercel Dashboard:
+  → Analytics Tab
+  → Performance Metrics
+  → Edge requests
+  → Regions
+```
+
+### Error Tracking (Optional)
+
+```typescript
+import * as Sentry from "@sentry/react"
+
+Sentry.init({
+  dsn: process.env.VITE_SENTRY_DSN,
+  environment: process.env.VITE_ENV
+})
+```
+
+---
+
+## 13. Performance Optimization
 
 ### Code Splitting
-```
-- Lazy load route components
-- Dynamic imports für große Libraries
-- Separate vendor chunk
+
+```typescript
+// Lazy load routes
+const AdminPage = lazy(() => import('./pages/Admin'))
+
+<Suspense fallback={<Loading />}>
+  <AdminPage />
+</Suspense>
 ```
 
 ### Image Optimization
-```
-- WebP format with fallback
-- Responsive images (srcset)
-- Lazy loading
-- Image compression
-```
 
-### Bundle Size
-```
-- Tree-shaking unused code
-- Minification
-- Compression (Gzip/Brotli)
-- Remove console logs in production
-```
-
----
-
-## 13. Monitoring & Analytics
-
-### Error Tracking (Sentry)
-```
-- JavaScript errors
-- API errors
-- Offline errors
-- Performance monitoring
-```
-
-### Analytics
-```
-- User DAU/MAU
-- Feature usage
-- Error rates
-- Performance metrics
+```html
+<img 
+  src="image.webp" 
+  alt="description"
+  loading="lazy"
+  width="400"
+  height="300"
+/>
 ```
 
 ---
@@ -444,19 +349,5 @@ API Error
 
 | Version | Datum | Autor | Änderung |
 |---------|-------|-------|---------|
-| 1.0.0 | 2026-04-03 | Claude | Initiale Implementation-Details |
-
----
-
-## 15. Hinweise
-
-⚠️ **Diese Details können sich ändern ohne die Anforderungen zu ändern!**
-
-Zum Beispiel:
-- Frontend-Framework wechsel: React → Vue
-- API-Design: REST → GraphQL
-- Database: PostgreSQL → MongoDB
-- Caching-Strategie anpassen
-
-**Solange die Anforderungen erfüllt werden, ist die Implementation austauschbar.**
+| 1.0.0 | 2026-04-03 | Claude | Initiale Version |
 

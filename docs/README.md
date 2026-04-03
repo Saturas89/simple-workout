@@ -1,31 +1,52 @@
 # Dokumentation - Simple Workout
 
-Dieses Verzeichnis enthält die gesamte Dokumentation für das Simple Workout Projekt.
+Vollständige Dokumentation für das Simple Workout Projekt.
 
-## Verzeichnisstruktur
+## 🚀 Quick Navigation
+
+**START HERE:**
+- **[INDEX.md](INDEX.md)** ← Dokumentations-Übersicht
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** ← Deployment mit Vercel CI
+
+**Core Docs:**
+- [SECRETS_SECURITY.md](SECRETS_SECURITY.md) - Passwort & Secret Management
+- [IMPLEMENTATION_DETAILS.md](IMPLEMENTATION_DETAILS.md) - Tech Stack
+- [PROJECT.md](PROJECT.md) - Projektübersicht
+
+## 📁 Verzeichnisstruktur
 
 ```
 docs/
-├── README.md                          # Dieses Dokument
-├── PROJECT.md                         # Projektübersicht und Glossar
-├── requirements/                      # Anforderungsdefinitionen
-│   └── REQUIREMENTS_TEMPLATE.md       # Template für neue Anforderungen
-├── modules/                           # Module des Projekts
-│   ├── core/                          # Core-Modul
-│   │   ├── SPECIFICATION.md           # Spezifikation des Core-Moduls
-│   │   ├── REQUIREMENTS.md            # Anforderungen für Core
-│   │   └── ARCHITECTURE.md            # Architektur-Details
-│   ├── ui/                            # UI-Modul
-│   │   ├── SPECIFICATION.md
-│   │   ├── REQUIREMENTS.md
-│   │   └── ARCHITECTURE.md
-│   └── [weitere Module]/
-├── design/                            # Design und UX Dokumentation
-│   └── DESIGN_SYSTEM.md               # Design System und Standards
-├── api/                               # API-Dokumentation
-│   └── API_REFERENCE.md               # API Referenz (wenn zutreffend)
-└── guides/                            # Anleitungen
-    └── CONTRIBUTING.md                # Contributing Guide
+├── INDEX.md                      # ⭐ Dokumentations-Index
+├── DEPLOYMENT.md                 # ⭐ Deployment mit Vercel CI
+├── SECRETS_SECURITY.md           # Sicherheit: Passwörter & Secrets
+├── IMPLEMENTATION_DETAILS.md     # Tech: Stack & Architecture
+├── PROJECT.md                    # Projektübersicht und Glossar
+├── vercel.json                   # Vercel Konfiguration
+│
+├── requirements/                 # Anforderungen (5 REQ)
+│   ├── README-CLEAN.md           # Erklärung: Clean Requirements
+│   ├── REQ-001-pwa-foundation-clean.md
+│   ├── REQ-002-workout-management-clean.md
+│   ├── REQ-003-offline-functionality-clean.md
+│   ├── REQ-004-data-storage-clean.md
+│   └── REQ-005-ci-cd-pipeline.md
+│
+├── modules/                      # Module (5 Module, je 5 Docs)
+│   ├── core/                     # PWA Foundation
+│   ├── workout/                  # Workout Management
+│   ├── data/                     # Data Layer & Storage
+│   ├── ui/                       # UI Components
+│   └── offline/                  # Offline & Service Worker
+│
+├── design/
+│   └── DESIGN_SYSTEM.md          # Design System & Guidelines
+│
+├── guides/
+│   └── CONTRIBUTING.md           # Contribution Guide
+│
+└── api/
+    └── API_REFERENCE.md          # API Documentation
 ```
 
 ## Wie man Anforderungen definiert
