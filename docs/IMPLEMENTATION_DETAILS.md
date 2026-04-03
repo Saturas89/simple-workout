@@ -4,6 +4,46 @@
 
 ---
 
+## Supabase Setup (erforderlich für Deployment)
+
+### 1. Projekt anlegen
+Unter [supabase.com](https://supabase.com) ein neues Projekt erstellen.
+
+### 2. Datenbank-Tabelle anlegen
+Im Supabase SQL-Editor ausführen:
+
+```sql
+CREATE TABLE trainings (
+  id TEXT PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  date TEXT NOT NULL,
+  muscle_groups TEXT[] NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  notes TEXT
+);
+
+ALTER TABLE trainings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own trainings" ON trainings
+  FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+```
+
+### 3. Environment Variables setzen
+In Vercel unter Settings → Environment Variables:
+```
+VITE_SUPABASE_URL      = https://xxxx.supabase.co
+VITE_SUPABASE_ANON_KEY = eyJ...
+```
+Beide Werte sind im Supabase Dashboard unter Settings → API zu finden.
+
+### 4. Auth-Einstellungen
+Supabase Dashboard → Authentication → Providers → Email: aktiviert (Standard).
+E-Mail-Bestätigung kann für einfacheres Onboarding deaktiviert werden.
+
+---
+
 ## Tech Stack (exakt)
 
 ```
