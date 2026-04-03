@@ -1,214 +1,45 @@
-# Anforderung: Training History & Logging
+# REQ-007: Trainingshistorie
 
-**Status:** 🟢 DRAFT  
-**ID:** REQ-007  
-**Version:** 1.0.0  
-**Letzte Aktualisierung:** 2026-04-03  
-**Modul:** Workout Management  
-**Priorität:** High  
+**Status:** ✅ Implementiert | **Version:** 1.0.0 | **Priorität:** High
 
 ---
 
-## 1. Zusammenfassung
+## Zusammenfassung
 
-Das System speichert automatisch, was der Benutzer an jedem Tag trainiert hat (Muskelgruppen + Datum). So entsteht eine Trainings-Historie für Verlauf und Analyse.
-
----
-
-## 2. Funktionale Anforderungen
-
-### 2.1 Automatisches Speichern
-
-- [ ] **FR-1.1:** Wenn Benutzer Muskelgruppen auswählt, wird automatisch gespeichert
-- [ ] **FR-1.2:** Speicherung erfolgt mit aktuellem Datum
-- [ ] **FR-1.3:** Kein manuelles "Speichern"-Button nötig (automatisch)
-- [ ] **FR-1.4:** Speicherung erfolgt lokal sofort
-- [ ] **FR-1.5:** Speicherung synchronisiert mit Cloud (wenn online)
-
-### 2.2 Training History Anzeige
-
-- [ ] **FR-2.1:** Benutzer kann Trainings-Geschichte anschauen
-- [ ] **FR-2.2:** History zeigt Datum + Muskelgruppen
-- [ ] **FR-2.3:** History kann gefiltert werden (z.B. nach Datum, Muskelgruppe)
-- [ ] **FR-2.4:** History kann sortiert werden (neueste zuerst)
-- [ ] **FR-2.5:** Benutzer kann einzelne Einträge löschen (optional)
-
-### 2.3 Datenformat
-
-- [ ] **FR-3.1:** Jeder Eintrag hat: Datum, Muskelgruppen, Zeit (optional)
-- [ ] **FR-3.2:** Format: "2026-04-03: Brust, Rücken, Mobility"
-- [ ] **FR-3.3:** Mehrfache Einträge pro Tag möglich (z.B. Morgens & Abends)
-
-### 2.4 Statistiken (Optional)
-
-- [ ] **FR-4.1:** Benutzer kann sehen wie oft jede Muskelgruppe trainiert wurde
-- [ ] **FR-4.2:** Durchschnitt pro Woche/Monat sichtbar (optional)
-- [ ] **FR-4.3:** Trends visualisiert (z.B. Chart)
+Jedes gespeicherte Training wird dauerhaft in IndexedDB abgelegt. Die letzten 10 Tage werden im Dashboard angezeigt, absteigend nach Datum.
 
 ---
 
-## 3. Nicht-funktionale Anforderungen
+## Implementiert
 
-### 3.1 Performance
+- **FR-7.1** ✅ Jede gespeicherte Auswahl erzeugt einen `TrainingEntry` mit Datum + Muskelgruppen
+- **FR-7.2** ✅ Einträge werden dauerhaft in IndexedDB gespeichert (bleiben bei App-Neustart erhalten)
+- **FR-7.3** ✅ Dashboard zeigt letzte 10 Tage als Liste
+- **FR-7.4** ✅ Liste ist absteigend nach Datum sortiert
+- **FR-7.5** ✅ Jede Zeile zeigt: Wochentag + Datum + Muskelgruppen (komma-separiert)
 
-| Anforderung | Wert |
-|-------------|------|
-| **Speichern** | < 100ms |
-| **Laden der History** | < 500ms |
-| **Anzahl Einträge** | Mindestens 365 (1 Jahr) |
+## Nicht implementiert
 
-### 3.2 Datenspeicherung
-
-- [ ] **NFR-2.1:** History wird lokal gespeichert
-- [ ] **NFR-2.2:** History synchronisiert mit Cloud
-- [ ] **NFR-2.3:** Keine Datenverluste möglich
-- [ ] **NFR-2.4:** Daten sind persistent über App-Neustarts
-
-### 3.3 Usability
-
-- [ ] **NFR-3.1:** Benutzer braucht nichts "speichern" (automatisch)
-- [ ] **NFR-3.2:** History ist einfach erreichbar
-- [ ] **NFR-3.3:** Übersichtliche Darstellung
-
-### 3.4 Datenschutz
-
-- [ ] **NFR-4.1:** Daten gehören dem Benutzer
-- [ ] **NFR-4.2:** Benutzer kann Daten exportieren
-- [ ] **NFR-4.3:** Benutzer kann Daten löschen
+- Einträge aus der UI löschen → `deleteTraining()` im Store existiert, aber kein UI-Element
+- Einträge bearbeiten → nicht geplant
+- Export / Import → nicht geplant
 
 ---
 
-## 4. Framework Anforderungen
+## Darstellung
 
-- [ ] **FW-1:** Database/Storage für History-Einträge
-- [ ] **FW-2:** Timestamps für Einträge
-- [ ] **FW-3:** Query-Funktionen (Filter, Sort)
-- [ ] **FW-4:** Optional: Chart/Graph Library für Statistiken
-- [ ] **FW-5:** Optional: Export-Funktionalität (CSV, JSON)
-
----
-
-## 5. Datenmodell
-
-```typescript
-interface TrainingEntry {
-  id: string;                    // Eindeutige ID
-  date: Date;                    // Datum (z.B. 2026-04-03)
-  muscleGroups: string[];        // Array von Muskelgruppen
-                                 // z.B. ["Brust", "Rücken"]
-  createdAt: Date;               // Wann erstellt
-  userId?: string;               // Benutzer ID (optional)
-  notes?: string;                // Notizen (optional)
-}
-
-// Beispiel Eintrag:
-{
-  id: "entry-123",
-  date: "2026-04-03",
-  muscleGroups: ["Brust", "Rücken", "Mobility"],
-  createdAt: "2026-04-03T10:30:00Z"
-}
+```
+Listenzeile: bg-gray-800 rounded-xl p-4, flex items-center gap-3
+  Balken:  w-1.5 h-8 bg-violet-500 rounded-full
+  Datum:   text-sm font-semibold text-white
+           Format: "Mo., 3. Apr." (de-DE: weekday:short, day:numeric, month:short)
+  Gruppen: text-xs text-gray-500
 ```
 
 ---
 
-## 6. Example: User Flow
+## Datenabruf
 
-```
-1. Benutzer öffnet App
-2. Wählt Muskelgruppen: "Brust", "Rücken", "Mobility"
-3. System speichert AUTOMATISCH:
-   {
-     date: "2026-04-03",
-     muscleGroups: ["Brust", "Rücken", "Mobility"],
-     time: "10:30 AM"
-   }
-4. Benutzer kann jederzeit History anschauen
-5. Sieht: "3. April: Brust, Rücken, Mobility"
-6. Kann sehen: Diese Woche 3x Rücken trainiert
-```
-
----
-
-## 7. Abhängigkeiten
-
-- **REQ-006:** Daily Muscle Group Selection (benötigt für Daten)
-- **REQ-001:** PWA Foundation (für Offline-Speicherung)
-- **REQ-004:** Data Storage & Sync (für Cloud-Sync)
-
----
-
-## 8. Akzeptanzkriterien
-
-- [ ] **AC-1:** Trainings-Daten werden automatisch gespeichert
-- [ ] **AC-2:** Jeder Eintrag hat Datum + Muskelgruppen
-- [ ] **AC-3:** History kann angezeigt werden
-- [ ] **AC-4:** Mindestens 365 Einträge speicherbar
-- [ ] **AC-5:** Daten synchronisieren mit Cloud
-- [ ] **AC-6:** Benutzer kann einzelne Einträge löschen
-- [ ] **AC-7:** Statistiken zeigen Häufigkeit pro Muskelgruppe
-- [ ] **AC-8:** History lädt schnell (< 500ms)
-
----
-
-## 9. UI/UX Überlegungen
-
-### History Anzeige Optionen:
-
-**Option A: Timeline View**
-```
-2026-04-03: Brust, Rücken, Mobility
-2026-04-02: Beine, Ausdauer
-2026-04-01: Schulter, Bizeps, Trizeps
-```
-
-**Option B: Calendar View**
-```
-April 2026
-Mo Di Mi Do Fr Sa So
-   01 02 03 04 05 06
-   Cl Br Rc Lm Be Au  (Abkürzungen)
-```
-
-**Option C: Statistics View**
-```
-Diese Woche:
-- Brust: 2x
-- Rücken: 3x
-- Beine: 1x
-- Ausdauer: 2x
-```
-
----
-
-## 10. Nicht-umfasst (Out of Scope)
-
-- [ ] Social Sharing von Trainings-Daten
-- [ ] Vergleich mit anderen Benutzern
-- [ ] AI-basierte Trainings-Empfehlungen
-- [ ] Automatische Trainings-Pläne generieren
-- [ ] Video-Tutorials
-
----
-
-## 11. Unterschied zu REQ-006
-
-```
-REQ-006: Daily Muscle Group Selection
-  → Was trainiere ich HEUTE?
-  → Aktuelle Auswahl
-
-REQ-007: Training History & Logging
-  → Was habe ich trainiert?
-  → Historische Daten mit Datum
-  → Verlauf & Statistiken
-```
-
----
-
-## 12. Änderungshistorie
-
-| Version | Datum | Autor | Änderung |
-|---------|-------|-------|---------|
-| 1.0.0 | 2026-04-03 | Claude | Initiale Version |
-
+`getTrainingsFromLastDays(10)` aus dem Zustand-Store  
+→ Filtert alle `TrainingEntry` mit Datum innerhalb der letzten 10 Tage  
+→ Wird bei jeder Änderung von `allTrainings` neu berechnet (useEffect-Dependency)
