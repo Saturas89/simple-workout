@@ -26,7 +26,7 @@ export default function MuscleGroupSelector() {
 
   const toggleMuscleGroup = (group: MuscleGroup) => {
     setSelected((prev) =>
-      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group],
+      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
     )
   }
 

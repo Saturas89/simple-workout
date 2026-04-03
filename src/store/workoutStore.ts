@@ -27,9 +27,7 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
     try {
       const trainings = await storageService.getAllTrainings()
       const today = new Date().toISOString().split('T')[0]
-      const todaySelection = trainings
-        .filter((t) => t.date === today)
-        .slice(-1)[0]
+      const todaySelection = trainings.filter((t) => t.date === today).slice(-1)[0]
 
       set({
         allTrainings: trainings,

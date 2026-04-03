@@ -31,9 +31,7 @@ export const recommendationService = {
     })
 
     // Sort by score (lowest first = most needed)
-    return scores
-      .sort((a, b) => a.score - b.score)
-      .slice(0, topN)
+    return scores.sort((a, b) => a.score - b.score).slice(0, topN)
   },
 
   getReason(group: string, trained: number, ideal: number): string {
@@ -65,9 +63,7 @@ export const recommendationService = {
       totalTrainings++
     })
 
-    const topMuscleGroup = Object.entries(frequencies).reduce((a, b) =>
-      a[1] > b[1] ? a : b,
-    )[0]
+    const topMuscleGroup = Object.entries(frequencies).reduce((a, b) => (a[1] > b[1] ? a : b))[0]
 
     const average = totalTrainings > 0 ? totalTrainings / MUSCLE_GROUPS.length : 0
 

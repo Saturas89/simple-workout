@@ -54,7 +54,10 @@ export default function DashboardView() {
           <h3 className="text-xl font-bold text-yellow-900 mb-4">🎯 Nächstes Training</h3>
           <div className="space-y-4">
             {recommendations.map((rec, index) => (
-              <div key={rec.muscleGroup} className="bg-white p-4 rounded border-l-4 border-yellow-500">
+              <div
+                key={rec.muscleGroup}
+                className="bg-white p-4 rounded border-l-4 border-yellow-500"
+              >
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-bold text-gray-800">
@@ -85,7 +88,10 @@ export default function DashboardView() {
             {last10Days
               .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
               .map((training) => (
-                <div key={training.id} className="bg-white p-3 rounded border-l-4 border-primary-600">
+                <div
+                  key={training.id}
+                  className="bg-white p-3 rounded border-l-4 border-primary-600"
+                >
                   <p className="font-semibold text-gray-800">
                     {new Date(training.date).toLocaleDateString('de-DE', {
                       weekday: 'short',
@@ -103,7 +109,9 @@ export default function DashboardView() {
       {last10Days.length === 0 && (
         <div className="bg-gray-100 p-8 rounded-lg text-center">
           <p className="text-gray-600 text-lg">Noch keine Trainings gespeichert.</p>
-          <p className="text-gray-500 text-sm mt-2">Beginne oben mit der Auswahl deiner Muskelgruppen! 💪</p>
+          <p className="text-gray-500 text-sm mt-2">
+            Beginne oben mit der Auswahl deiner Muskelgruppen! 💪
+          </p>
         </div>
       )}
     </div>
