@@ -1,20 +1,25 @@
 import { create } from 'zustand'
 import { TrainingEntry, DailySelection, MuscleGroup } from '@/types'
 import { storageService } from '@/services/storage'
+import { cloudStorageService } from '@/services/cloudStorage'
+import { supabase } from '@/services/supabase'
 
 interface WorkoutStore {
-  // State
   allTrainings: TrainingEntry[]
   todaySelection: DailySelection | null
   isLoading: boolean
 
-  // Actions
   initialize: () => Promise<void>
-  getTodaySelection: () => Promise<DailySelection | null>
   saveTodaySelection: (muscleGroups: MuscleGroup[]) => Promise<void>
-  addTraining: (muscleGroups: MuscleGroup[]) => Promise<void>
   getTrainingsFromLastDays: (days: number) => Promise<TrainingEntry[]>
   deleteTraining: (id: string) => Promise<void>
+}
+
+const getStorage = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user ? cloudStorageService : storageService
 }
 
 export const useWorkoutStore = create<WorkoutStore>((set) => ({
@@ -25,14 +30,15 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
   initialize: async () => {
     set({ isLoading: true })
     try {
-      const trainings = await storageService.getAllTrainings()
+      const storage = await getStorage()
+      const trainings = await storage.getAllTrainings()
       const today = new Date().toISOString().split('T')[0]
-      const todaySelection = trainings.filter((t) => t.date === today).slice(-1)[0]
+      const todayTraining = trainings.filter((t) => t.date === today).slice(-1)[0]
 
       set({
         allTrainings: trainings,
-        todaySelection: todaySelection
-          ? { date: todaySelection.date, muscleGroups: todaySelection.muscleGroups }
+        todaySelection: todayTraining
+          ? { date: todayTraining.date, muscleGroups: todayTraining.muscleGroups }
           : null,
         isLoading: false,
       })
@@ -40,17 +46,6 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
       console.error('Failed to initialize store:', error)
       set({ isLoading: false })
     }
-  },
-
-  getTodaySelection: async () => {
-    const today = new Date().toISOString().split('T')[0]
-    const trainings = await storageService.getAllTrainings()
-    const todayTraining = trainings.find((t) => t.date === today)
-
-    if (todayTraining) {
-      return { date: todayTraining.date, muscleGroups: todayTraining.muscleGroups }
-    }
-    return null
   },
 
   saveTodaySelection: async (muscleGroups: MuscleGroup[]) => {
@@ -62,7 +57,8 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
       createdAt: new Date().toISOString(),
     }
 
-    await storageService.addTraining(training)
+    const storage = await getStorage()
+    await storage.addTraining(training)
 
     set((state) => ({
       allTrainings: [...state.allTrainings, training],
@@ -70,25 +66,11 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
     }))
   },
 
-  addTraining: async (muscleGroups: MuscleGroup[]) => {
-    const training: TrainingEntry = {
-      id: `${Date.now()}`,
-      date: new Date().toISOString().split('T')[0],
-      muscleGroups,
-      createdAt: new Date().toISOString(),
-    }
-
-    await storageService.addTraining(training)
-
-    set((state) => ({
-      allTrainings: [...state.allTrainings, training],
-    }))
-  },
-
   getTrainingsFromLastDays: async (days: number) => {
     const today = new Date()
     const startDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000)
-    const trainings = await storageService.getAllTrainings()
+    const storage = await getStorage()
+    const trainings = await storage.getAllTrainings()
 
     return trainings.filter((t) => {
       const trainingDate = new Date(t.date)
@@ -97,7 +79,8 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
   },
 
   deleteTraining: async (id: string) => {
-    await storageService.deleteTraining(id)
+    const storage = await getStorage()
+    await storage.deleteTraining(id)
 
     set((state) => ({
       allTrainings: state.allTrainings.filter((t) => t.id !== id),
