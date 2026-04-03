@@ -17,7 +17,7 @@ interface WorkoutStore {
   deleteTraining: (id: string) => Promise<void>
 }
 
-export const useWorkoutStore = create<WorkoutStore>((set, get) => ({
+export const useWorkoutStore = create<WorkoutStore>((set) => ({
   allTrainings: [],
   todaySelection: null,
   isLoading: false,

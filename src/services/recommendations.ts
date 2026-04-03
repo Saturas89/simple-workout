@@ -36,7 +36,7 @@ export const recommendationService = {
       .slice(0, topN)
   },
 
-  private getReason(group: string, trained: number, ideal: number): string {
+  getReason(group: string, trained: number, ideal: number): string {
     const percentage = Math.round((trained / ideal) * 100)
 
     if (percentage === 0) {
