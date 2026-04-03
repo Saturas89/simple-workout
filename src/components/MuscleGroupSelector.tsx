@@ -3,19 +3,28 @@ import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
 
 const MUSCLE_COLORS: Record<MuscleGroup, string> = {
-  Brust: 'bg-red-500',
-  Rücken: 'bg-blue-500',
-  Schulter: 'bg-purple-500',
-  Bizeps: 'bg-orange-500',
-  Trizeps: 'bg-pink-500',
-  Beine: 'bg-green-500',
-  Mobility: 'bg-yellow-500',
-  Ausdauer: 'bg-cyan-500',
-  Eisbaden: 'bg-indigo-500',
+  Brust: 'bg-red-500/20 text-red-300 border-red-500/30 data-[active=true]:bg-red-500 data-[active=true]:text-white data-[active=true]:border-red-500',
+  Rücken:
+    'bg-blue-500/20 text-blue-300 border-blue-500/30 data-[active=true]:bg-blue-500 data-[active=true]:text-white data-[active=true]:border-blue-500',
+  Schulter:
+    'bg-violet-500/20 text-violet-300 border-violet-500/30 data-[active=true]:bg-violet-500 data-[active=true]:text-white data-[active=true]:border-violet-500',
+  Bizeps:
+    'bg-orange-500/20 text-orange-300 border-orange-500/30 data-[active=true]:bg-orange-500 data-[active=true]:text-white data-[active=true]:border-orange-500',
+  Trizeps:
+    'bg-pink-500/20 text-pink-300 border-pink-500/30 data-[active=true]:bg-pink-500 data-[active=true]:text-white data-[active=true]:border-pink-500',
+  Beine:
+    'bg-green-500/20 text-green-300 border-green-500/30 data-[active=true]:bg-green-500 data-[active=true]:text-white data-[active=true]:border-green-500',
+  Mobility:
+    'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 data-[active=true]:bg-yellow-500 data-[active=true]:text-white data-[active=true]:border-yellow-500',
+  Ausdauer:
+    'bg-cyan-500/20 text-cyan-300 border-cyan-500/30 data-[active=true]:bg-cyan-500 data-[active=true]:text-white data-[active=true]:border-cyan-500',
+  Eisbaden:
+    'bg-indigo-500/20 text-indigo-300 border-indigo-500/30 data-[active=true]:bg-indigo-500 data-[active=true]:text-white data-[active=true]:border-indigo-500',
 }
 
 export default function MuscleGroupSelector() {
   const [selected, setSelected] = useState<MuscleGroup[]>([])
+  const [saved, setSaved] = useState(false)
   const { saveTodaySelection, todaySelection } = useWorkoutStore()
 
   useEffect(() => {
@@ -25,51 +34,47 @@ export default function MuscleGroupSelector() {
   }, [todaySelection])
 
   const toggleMuscleGroup = (group: MuscleGroup) => {
+    setSaved(false)
     setSelected((prev) =>
       prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
     )
   }
 
   const handleSave = async () => {
-    if (selected.length > 0) {
-      await saveTodaySelection(selected)
-      alert('Trainings-Auswahl gespeichert! 💪')
-    }
+    if (selected.length === 0) return
+    await saveTodaySelection(selected)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-2">
         {MUSCLE_GROUPS.map((group) => (
           <button
             key={group}
             onClick={() => toggleMuscleGroup(group)}
-            className={`p-4 rounded-lg font-semibold text-white transition-all duration-200 ${
-              selected.includes(group)
-                ? `${MUSCLE_COLORS[group]} scale-105 shadow-lg`
-                : `${MUSCLE_COLORS[group]} opacity-50 hover:opacity-75`
-            }`}
-            title={`Toggle ${group}`}
+            data-active={selected.includes(group)}
+            className={`px-3 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-150 ${MUSCLE_COLORS[group]}`}
           >
             {group}
           </button>
         ))}
       </div>
 
-      {selected.length > 0 && (
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-          <p className="text-blue-700 font-medium">
-            Heute: <span className="font-bold">{selected.join(', ')}</span>
-          </p>
-        </div>
-      )}
-
       <button
         onClick={handleSave}
         disabled={selected.length === 0}
-        className="w-full bg-primary-700 text-white py-3 rounded-lg font-bold hover:bg-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-200
+          ${
+            saved
+              ? 'bg-green-500 text-white'
+              : selected.length > 0
+                ? 'bg-violet-500 hover:bg-violet-400 text-white'
+                : 'bg-white/5 text-gray-500 cursor-not-allowed'
+          }`}
       >
-        Auswahl speichern 💾
+        {saved ? 'Gespeichert ✓' : 'Auswahl speichern'}
       </button>
     </div>
   )

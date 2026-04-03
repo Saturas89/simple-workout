@@ -13,66 +13,62 @@ export default function DashboardView() {
     const loadData = async () => {
       const trainings = await getTrainingsFromLastDays(10)
       setLast10Days(trainings)
-
       if (trainings.length > 0) {
-        const recs = recommendationService.generateRecommendations(trainings, 3)
-        setRecommendations(recs)
-
-        const workoutStats = recommendationService.getWorkoutStats(trainings)
-        setStats(workoutStats)
+        setRecommendations(recommendationService.generateRecommendations(trainings, 3))
+        setStats(recommendationService.getWorkoutStats(trainings))
       }
     }
-
     loadData()
   }, [allTrainings, getTrainingsFromLastDays])
 
+  if (last10Days.length === 0) {
+    return (
+      <div className="py-10 text-center">
+        <p className="text-3xl mb-3">🏋️</p>
+        <p className="text-gray-400 text-sm">Noch keine Trainings gespeichert.</p>
+        <p className="text-gray-600 text-xs mt-1">Wähle oben deine Muskelgruppen aus.</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-8">
-      {/* Statistics Overview */}
+    <div className="space-y-6">
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
-            <p className="text-gray-600 text-sm">Diese Woche</p>
-            <p className="text-3xl font-bold text-blue-700">{stats.totalTrainings}</p>
-            <p className="text-gray-600 text-xs">Trainings</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-gray-800 rounded-xl p-4">
+            <p className="text-2xl font-black text-white">{stats.totalTrainings}</p>
+            <p className="text-gray-400 text-xs mt-1">Trainings</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
-            <p className="text-gray-600 text-sm">Durchschnitt</p>
-            <p className="text-3xl font-bold text-green-700">{stats.average}</p>
-            <p className="text-gray-600 text-xs">pro Muskelgruppe</p>
+          <div className="bg-gray-800 rounded-xl p-4">
+            <p className="text-2xl font-black text-white">{stats.average}</p>
+            <p className="text-gray-400 text-xs mt-1">Ø Muskelgruppen</p>
           </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
-            <p className="text-gray-600 text-sm">Top Muskelgruppe</p>
-            <p className="text-2xl font-bold text-purple-700">{stats.topMuscleGroup || 'N/A'}</p>
+          <div className="bg-gray-800 rounded-xl p-4">
+            <p className="text-lg font-black text-white truncate">{stats.topMuscleGroup || '–'}</p>
+            <p className="text-gray-400 text-xs mt-1">Top Gruppe</p>
           </div>
         </div>
       )}
 
-      {/* Recommendations */}
       {recommendations.length > 0 && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
-          <h3 className="text-xl font-bold text-yellow-900 mb-4">🎯 Nächstes Training</h3>
-          <div className="space-y-4">
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Nächstes Training
+          </p>
+          <div className="space-y-2">
             {recommendations.map((rec, index) => (
-              <div
-                key={rec.muscleGroup}
-                className="bg-white p-4 rounded border-l-4 border-yellow-500"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-bold text-gray-800">
-                      {index + 1}. {rec.muscleGroup}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      ⚠️ {rec.trainedInLast10Days}x in 10 Tagen (Ziel: {rec.ideal}x)
-                    </p>
-                    <p className="text-sm text-gray-700 italic mt-1">"{rec.reason}"</p>
-                  </div>
-                  <div className="bg-yellow-100 px-3 py-1 rounded">
-                    <p className="text-xs font-bold text-yellow-800">
-                      {Math.round(rec.score * 10) / 10}
-                    </p>
-                  </div>
+              <div key={rec.muscleGroup} className="bg-gray-800 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-7 h-7 rounded-lg bg-violet-500/20 text-violet-300 flex items-center justify-center text-xs font-bold shrink-0">
+                  {index + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-white text-sm">{rec.muscleGroup}</p>
+                  <p className="text-gray-500 text-xs truncate">{rec.reason}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-xs text-gray-500">
+                    {rec.trainedInLast10Days}x / {rec.ideal}x
+                  </p>
                 </div>
               </div>
             ))}
@@ -80,40 +76,30 @@ export default function DashboardView() {
         </div>
       )}
 
-      {/* Training History */}
-      {last10Days.length > 0 && (
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">📅 Letzte 10 Tage</h3>
-          <div className="space-y-2">
-            {last10Days
-              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-              .map((training) => (
-                <div
-                  key={training.id}
-                  className="bg-white p-3 rounded border-l-4 border-primary-600"
-                >
-                  <p className="font-semibold text-gray-800">
+      <div>
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+          Letzte 10 Tage
+        </p>
+        <div className="space-y-2">
+          {last10Days
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((training) => (
+              <div key={training.id} className="bg-gray-800 rounded-xl p-4 flex items-center gap-3">
+                <div className="w-1.5 h-8 bg-violet-500 rounded-full shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-white">
                     {new Date(training.date).toLocaleDateString('de-DE', {
                       weekday: 'short',
-                      month: 'short',
                       day: 'numeric',
+                      month: 'short',
                     })}
                   </p>
-                  <p className="text-sm text-gray-600">{training.muscleGroups.join(', ')}</p>
+                  <p className="text-xs text-gray-500">{training.muscleGroups.join(', ')}</p>
                 </div>
-              ))}
-          </div>
+              </div>
+            ))}
         </div>
-      )}
-
-      {last10Days.length === 0 && (
-        <div className="bg-gray-100 p-8 rounded-lg text-center">
-          <p className="text-gray-600 text-lg">Noch keine Trainings gespeichert.</p>
-          <p className="text-gray-500 text-sm mt-2">
-            Beginne oben mit der Auswahl deiner Muskelgruppen! 💪
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

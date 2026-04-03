@@ -8,35 +8,41 @@ function App() {
   const { initialize } = useWorkoutStore()
 
   useEffect(() => {
-    // Initialize store from IndexedDB on mount
     initialize()
   }, [initialize])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-3xl font-bold text-primary-700">💪 Simple Workout</h1>
-          <p className="text-gray-600 text-sm">Intelligent Training Management</p>
+    <div className="min-h-screen bg-gray-950 text-white">
+      <header className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur border-b border-white/5">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+          <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center text-sm font-black">
+            SW
+          </div>
+          <div>
+            <h1 className="text-base font-bold leading-tight">Simple Workout</h1>
+            <p className="text-gray-400 text-xs">Dein Training, dein Fortschritt</p>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        <section className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">Heute trainieren</h2>
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <section className="bg-gray-900 rounded-2xl p-5 border border-white/5">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+            Heute trainieren
+          </h2>
           <MuscleGroupSelector />
         </section>
 
-        <section className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">Dashboard</h2>
+        <section className="bg-gray-900 rounded-2xl p-5 border border-white/5">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+            Dashboard
+          </h2>
           <DashboardView />
         </section>
       </main>
 
-      <footer className="mt-12 bg-gray-100 py-6">
-        <div className="max-w-7xl mx-auto px-4 text-center text-gray-600 text-sm">
-          <p>Simple Workout v1.0.0 • Progressive Web App</p>
-        </div>
+      <footer className="max-w-2xl mx-auto px-4 py-6 text-center text-gray-600 text-xs">
+        Simple Workout v1.0.0
       </footer>
     </div>
   )
