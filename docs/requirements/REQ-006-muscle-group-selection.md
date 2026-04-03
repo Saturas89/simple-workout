@@ -19,7 +19,7 @@ Benutzer können für den aktuellen Tag auswählen, welche Muskelgruppe(n) er tr
 
 ### 2.1 Muskelgruppen Auswahl
 
-- [ ] **FR-1.1:** Es gibt 8 vordefinierte Muskelgruppen:
+- [ ] **FR-1.1:** Es gibt 9 vordefinierte Muskelgruppen:
   - Brust
   - Rücken
   - Schulter
@@ -28,6 +28,7 @@ Benutzer können für den aktuellen Tag auswählen, welche Muskelgruppe(n) er tr
   - Beine
   - Mobility
   - Ausdauer (Cardio)
+  - Eisbaden
 
 - [ ] **FR-1.2:** Benutzer kann eine oder mehrere Muskelgruppen für heute auswählen
 - [ ] **FR-1.3:** Auswahl wird visuell dargestellt (z.B. durch Farbgebung, Icons, oder Checkmarks)
@@ -131,6 +132,11 @@ Benutzer können für den aktuellen Tag auswählen, welche Muskelgruppe(n) er tr
 8. Ausdauer (Cardio)
    - Herz-Kreislauf Training
    - Laufen, Radfahren, HIIT
+
+9. Eisbaden (Ice Bathing)
+   - Kälte-Therapie
+   - Cold Plunge, Eisbad
+   - Recovery & Wellness
 ```
 
 ---
@@ -159,7 +165,7 @@ Benutzer können für den aktuellen Tag auswählen, welche Muskelgruppe(n) er tr
 
 ## 8. Akzeptanzkriterien
 
-- [ ] **AC-1:** 8 Muskelgruppen sind definiert
+- [ ] **AC-1:** 9 Muskelgruppen sind definiert
 - [ ] **AC-2:** Benutzer kann 1+ Muskelgruppen auswählen
 - [ ] **AC-3:** Auswahl wird visuell angezeigt
 - [ ] **AC-4:** Auswahl wird gespeichert
