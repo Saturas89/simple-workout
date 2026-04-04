@@ -175,6 +175,31 @@ Liste: space-y-2
     Gruppen: text-xs text-gray-500 (komma-separiert)
 ```
 
+### AddPastTraining (dezentes Inline-Formular)
+
+```
+Toggle-Link: text-xs text-gray-600 hover:text-gray-400, flex items-center gap-1
+  Text: "+ Vergangenen Tag nachtragen" / "− Vergangenen Tag nachtragen"
+
+Formular (wenn offen):
+  mt-3 p-4 bg-gray-800/60 rounded-xl space-y-3 border border-white/5
+
+  Datumspicker:
+    w-full bg-gray-800 text-white text-sm rounded-lg px-3 py-2
+    border border-white/10, focus:border-violet-500
+    max = gestern
+
+  Muskelgruppen-Pills (kompakter als Hauptauswahl):
+    flex flex-wrap gap-1.5
+    Jede Pill: px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150
+    Gleiche data-active Farblogik wie MuscleGroupSelector
+
+  Speichern-Button: w-full py-2 rounded-lg text-xs font-bold
+    - Leer/kein Datum: bg-white/5 text-gray-600 cursor-not-allowed
+    - Bereit:          bg-violet-500 hover:bg-violet-400 text-white
+    - Gespeichert:     bg-green-500 text-white, Text "Gespeichert ✓" (1,5s, dann auto-close)
+```
+
 ---
 
 ## Animationen / Transitions

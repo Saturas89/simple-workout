@@ -1,6 +1,6 @@
 # Simple Workout – Projektübersicht
 
-**Version:** 1.1.0 | **Status:** Produktion | **Deployment:** Vercel
+**Version:** 1.2.0 | **Status:** Produktion | **Deployment:** Vercel
 
 ---
 
@@ -32,6 +32,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Empfehlungen**: Top 3 vernachlässigte Muskelgruppen (Score-basiert, niedrigster Score = dringendster Bedarf)
 - **Historie**: Letzte 10 Tage, absteigend nach Datum sortiert
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
+- **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
 
 ### 3. Analytics (Tab: Verlauf)
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
@@ -96,6 +97,7 @@ simple-workout/
 │   │   ├── MuscleGroupSelector.tsx   # Buttons + Speichern-Button
 │   │   ├── DashboardView.tsx         # Stats, Empfehlungen, Historie
 │   │   ├── AnalyticsView.tsx         # Charts: Wochenaktivität, Muskelverteilung
+│   │   ├── AddPastTraining.tsx       # Dezentes Inline-Formular: vergangene Trainings nachtragen
 │   │   └── AuthView.tsx              # Login / Registrierung
 │   ├── services/
 │   │   ├── storage.ts               # IndexedDB via idb (CRUD)

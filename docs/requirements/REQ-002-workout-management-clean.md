@@ -1,6 +1,6 @@
 # REQ-002: Tägliche Trainingserfassung
 
-**Status:** ✅ Implementiert | **Version:** 1.0.0 | **Priorität:** High
+**Status:** ✅ Implementiert | **Version:** 1.2.0 | **Priorität:** High
 
 ---
 
@@ -18,6 +18,7 @@ Der Nutzer wählt täglich aus, welche Muskelgruppen er trainiert hat, und speic
 - **FR-2.4** ✅ Beim App-Start wird die heutige Auswahl automatisch geladen und angezeigt
 - **FR-2.5** ✅ Speichern-Button zeigt Feedback: „Gespeichert ✓" für 3 Sekunden (kein Alert)
 - **FR-2.6** ✅ Speichern-Button deaktiviert wenn keine Auswahl
+- **FR-2.7** ✅ Vergangene Tage nachtragen (dezente Funktion, selten genutzt)
 
 ## Nicht implementiert (kein Bedarf)
 
@@ -42,11 +43,20 @@ interface TrainingEntry {
 
 ---
 
-## Komponente
+## Komponenten
 
-`src/components/MuscleGroupSelector.tsx`
-
+### `src/components/MuscleGroupSelector.tsx`
 - Liest `todaySelection` aus Zustand-Store beim Mount
 - Toggle-State lokal in `useState<MuscleGroup[]>`
-- `saveTodaySelection()` aus Store aufrufen → schreibt in IndexedDB
+- `saveTodaySelection()` aus Store aufrufen → schreibt in IndexedDB / Supabase
 - Button-Zustände: leer / bereit (violett) / gespeichert (grün, 3s)
+
+### `src/components/AddPastTraining.tsx` (FR-2.7)
+- Dezenter Toggle-Link (`+ Vergangenen Tag nachtragen`) am Ende der Historie
+- Klappt ein Inline-Formular auf (kein Modal, kein eigener Tab)
+- **Datumspicker**: `<input type="date">`, max = gestern (heute hat eigenen Flow)
+- **Muskelgruppen-Pills**: kompaktere Variante der Hauptauswahl (`px-2.5 py-1 text-xs`)
+- Gleiche Farblogik wie MuscleGroupSelector (`data-active`)
+- Nach Speichern: Button zeigt „Gespeichert ✓" (1,5s), Formular klappt automatisch zu
+- Store-Action: `addTrainingForDate(date: string, muscleGroups: MuscleGroup[])`
+- Sichtbar sowohl im Leer-Zustand als auch unter der gefüllten Historie
