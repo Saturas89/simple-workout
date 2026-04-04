@@ -38,18 +38,20 @@ export default function DashboardView() {
   return (
     <div className="space-y-6">
       {stats && (
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-gray-800 rounded-xl p-4">
-            <p className="text-2xl font-black text-white">{stats.totalTrainings}</p>
-            <p className="text-gray-400 text-xs mt-1">Trainings</p>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+            <p className="text-2xl font-black text-white leading-none">{stats.totalTrainings}</p>
+            <p className="text-gray-400 text-xs mt-2 leading-tight">Trainings</p>
           </div>
-          <div className="bg-gray-800 rounded-xl p-4">
-            <p className="text-2xl font-black text-white">{stats.average}</p>
-            <p className="text-gray-400 text-xs mt-1">Ø Muskelgruppen</p>
+          <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+            <p className="text-2xl font-black text-white leading-none">{stats.average}</p>
+            <p className="text-gray-400 text-xs mt-2 leading-tight">Ø pro Gruppe</p>
           </div>
-          <div className="bg-gray-800 rounded-xl p-4">
-            <p className="text-lg font-black text-white truncate">{stats.topMuscleGroup || '–'}</p>
-            <p className="text-gray-400 text-xs mt-1">Top Gruppe</p>
+          <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+            <p className="text-base font-black text-white leading-tight break-words">
+              {stats.topMuscleGroup || '–'}
+            </p>
+            <p className="text-gray-400 text-xs mt-2 leading-tight">Top Gruppe</p>
           </div>
         </div>
       )}

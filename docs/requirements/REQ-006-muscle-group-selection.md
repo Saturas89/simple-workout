@@ -14,15 +14,15 @@ Die 9 Muskelgruppen sind fest vordefiniert. Jede hat eine feste Farbe, ein Emoji
 
 | Muskelgruppe | Idealfrequenz (10 Tage) | Tailwind-Farbe | Icon |
 |---|---|---|---|
-| Brust | 2 | red | 💪 |
-| Rücken | 2 | blue | 🏊 |
-| Schulter | 2 | violet | 🏋️ |
-| Bizeps | 1 | orange | 🦵 |
-| Trizeps | 1 | pink | 🦾 |
-| Beine | 2 | green | 🚴 |
-| Mobility | 4 | yellow | 🧘 |
-| Ausdauer | 2 | cyan | 🏃 |
-| Eisbaden | 3 | indigo | 🧊 |
+| Brust | 2 | red | 🏋️ (Bankdrücken) |
+| Rücken | 2 | blue | 🚣 (Rudern) |
+| Schulter | 2 | violet | 🤸 (Überkopf) |
+| Bizeps | 1 | orange | 💪 (Bizeps-Emoji) |
+| Trizeps | 1 | pink | 🦾 (Armstärke) |
+| Beine | 2 | green | 🦵 (Bein-Emoji) |
+| Mobility | 4 | yellow | 🧘 (Yoga) |
+| Ausdauer | 2 | cyan | 🏃 (Laufen) |
+| Eisbaden | 3 | indigo | 🥶 (Gefroren) |
 
 ---
 
