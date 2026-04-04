@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { recommendationService } from '@/services/recommendations'
 import { RecommendationItem, WorkoutStats } from '@/types'
+import AddPastTraining from '@/components/AddPastTraining'
 
 export default function DashboardView() {
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
@@ -23,10 +24,13 @@ export default function DashboardView() {
 
   if (last10Days.length === 0) {
     return (
-      <div className="py-10 text-center">
-        <p className="text-3xl mb-3">🏋️</p>
-        <p className="text-gray-400 text-sm">Noch keine Trainings gespeichert.</p>
-        <p className="text-gray-600 text-xs mt-1">Wähle oben deine Muskelgruppen aus.</p>
+      <div>
+        <div className="py-8 text-center">
+          <p className="text-3xl mb-3">🏋️</p>
+          <p className="text-gray-400 text-sm">Noch keine Trainings gespeichert.</p>
+          <p className="text-gray-600 text-xs mt-1">Wähle oben deine Muskelgruppen aus.</p>
+        </div>
+        <AddPastTraining />
       </div>
     )
   }
@@ -99,6 +103,7 @@ export default function DashboardView() {
               </div>
             ))}
         </div>
+        <AddPastTraining />
       </div>
     </div>
   )

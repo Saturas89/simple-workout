@@ -1,0 +1,95 @@
+import { useState } from 'react'
+import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
+import { useWorkoutStore } from '@/store/workoutStore'
+
+const MUSCLE_COLORS: Record<MuscleGroup, string> = {
+  Brust: 'bg-red-500/20 text-red-300 data-[active=true]:bg-red-500 data-[active=true]:text-white',
+  Rücken: 'bg-blue-500/20 text-blue-300 data-[active=true]:bg-blue-500 data-[active=true]:text-white',
+  Schulter: 'bg-violet-500/20 text-violet-300 data-[active=true]:bg-violet-500 data-[active=true]:text-white',
+  Bizeps: 'bg-orange-500/20 text-orange-300 data-[active=true]:bg-orange-500 data-[active=true]:text-white',
+  Trizeps: 'bg-pink-500/20 text-pink-300 data-[active=true]:bg-pink-500 data-[active=true]:text-white',
+  Beine: 'bg-green-500/20 text-green-300 data-[active=true]:bg-green-500 data-[active=true]:text-white',
+  Mobility: 'bg-yellow-500/20 text-yellow-300 data-[active=true]:bg-yellow-500 data-[active=true]:text-white',
+  Ausdauer: 'bg-cyan-500/20 text-cyan-300 data-[active=true]:bg-cyan-500 data-[active=true]:text-white',
+  Eisbaden: 'bg-indigo-500/20 text-indigo-300 data-[active=true]:bg-indigo-500 data-[active=true]:text-white',
+}
+
+const yesterday = new Date()
+yesterday.setDate(yesterday.getDate() - 1)
+const maxDate = yesterday.toISOString().split('T')[0]
+
+export default function AddPastTraining() {
+  const [open, setOpen] = useState(false)
+  const [date, setDate] = useState(maxDate)
+  const [selected, setSelected] = useState<MuscleGroup[]>([])
+  const [saved, setSaved] = useState(false)
+  const { addTrainingForDate } = useWorkoutStore()
+
+  const toggle = (group: MuscleGroup) =>
+    setSelected((prev) =>
+      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
+    )
+
+  const handleSave = async () => {
+    if (!date || selected.length === 0) return
+    await addTrainingForDate(date, selected)
+    setSaved(true)
+    setTimeout(() => {
+      setSaved(false)
+      setSelected([])
+      setDate(maxDate)
+      setOpen(false)
+    }, 1500)
+  }
+
+  return (
+    <div className="mt-3">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="text-xs text-gray-600 hover:text-gray-400 transition-colors flex items-center gap-1"
+      >
+        <span>{open ? '−' : '+'}</span>
+        <span>Vergangenen Tag nachtragen</span>
+      </button>
+
+      {open && (
+        <div className="mt-3 p-4 bg-gray-800/60 rounded-xl space-y-3 border border-white/5">
+          <input
+            type="date"
+            value={date}
+            max={maxDate}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full bg-gray-800 text-white text-sm rounded-lg px-3 py-2 border border-white/10 outline-none focus:border-violet-500 transition-colors"
+          />
+
+          <div className="flex flex-wrap gap-1.5">
+            {MUSCLE_GROUPS.map((group) => (
+              <button
+                key={group}
+                onClick={() => toggle(group)}
+                data-active={selected.includes(group)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 ${MUSCLE_COLORS[group]}`}
+              >
+                {group}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleSave}
+            disabled={selected.length === 0 || !date}
+            className={`w-full py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
+              saved
+                ? 'bg-green-500 text-white'
+                : selected.length > 0 && date
+                  ? 'bg-violet-500 hover:bg-violet-400 text-white'
+                  : 'bg-white/5 text-gray-600 cursor-not-allowed'
+            }`}
+          >
+            {saved ? 'Gespeichert ✓' : 'Speichern'}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
