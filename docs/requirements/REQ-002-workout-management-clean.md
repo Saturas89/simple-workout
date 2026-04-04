@@ -1,6 +1,6 @@
 # REQ-002: Tägliche Trainingserfassung
 
-**Status:** ✅ Implementiert | **Version:** 1.2.0 | **Priorität:** High
+**Status:** ✅ Implementiert | **Version:** 1.3.0 | **Priorität:** High
 
 ---
 
@@ -19,6 +19,7 @@ Der Nutzer wählt täglich aus, welche Muskelgruppen er trainiert hat, und speic
 - **FR-2.5** ✅ Speichern-Button zeigt Feedback: „Gespeichert ✓" für 3 Sekunden (kein Alert)
 - **FR-2.6** ✅ Speichern-Button deaktiviert wenn keine Auswahl
 - **FR-2.7** ✅ Vergangene Tage nachtragen (dezente Funktion, selten genutzt)
+- **FR-2.8** ✅ Alle Trainingsdaten löschen (mit Sicherheitsabfrage, ohne Browser-Dialogs)
 
 ## Nicht implementiert (kein Bedarf)
 
@@ -60,3 +61,11 @@ interface TrainingEntry {
 - Nach Speichern: Button zeigt „Gespeichert ✓" (1,5s), Formular klappt automatisch zu
 - Store-Action: `addTrainingForDate(date: string, muscleGroups: MuscleGroup[])`
 - Sichtbar sowohl im Leer-Zustand als auch unter der gefüllten Historie
+
+### `src/components/ClearDataButton.tsx` (FR-2.8)
+- Dezenter Untertext-Link am Ende des Dashboards: „Alle Trainingsdaten löschen"
+- Nach Klick: Inline-Bestätigungsblock erscheint (kein Modal, kein `window.confirm()`)
+- **Bestätigungsblock**: roter Hintergrund-Tint, Hinweis mit Anzahl der betroffenen Trainings, Buttons „Abbrechen" und „Ja, alles löschen"
+- Während Löschvorgang: Ladezustand „Wird gelöscht…"
+- Store-Action: `clearAllTrainings()` → löscht aus IndexedDB oder Supabase (je nach Login-Status), setzt `allTrainings: []` und `todaySelection: null`
+- Service-Methoden: `storageService.clearAllTrainings()` (IndexedDB `clear()`), `cloudStorageService.clearAllTrainings()` (Supabase DELETE WHERE user_id)

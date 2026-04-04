@@ -1,6 +1,6 @@
 # Simple Workout – Projektübersicht
 
-**Version:** 1.2.0 | **Status:** Produktion | **Deployment:** Vercel
+**Version:** 1.3.0 | **Status:** Produktion | **Deployment:** Vercel
 
 ---
 
@@ -33,6 +33,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Historie**: Letzte 10 Tage, absteigend nach Datum sortiert
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
 - **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
+- **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
 
 ### 3. Analytics (Tab: Verlauf)
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
@@ -98,6 +99,7 @@ simple-workout/
 │   │   ├── DashboardView.tsx         # Stats, Empfehlungen, Historie
 │   │   ├── AnalyticsView.tsx         # Charts: Wochenaktivität, Muskelverteilung
 │   │   ├── AddPastTraining.tsx       # Dezentes Inline-Formular: vergangene Trainings nachtragen
+│   │   ├── ClearDataButton.tsx       # Alle Trainingsdaten löschen (Inline-Sicherheitsabfrage)
 │   │   └── AuthView.tsx              # Login / Registrierung
 │   ├── services/
 │   │   ├── storage.ts               # IndexedDB via idb (CRUD)

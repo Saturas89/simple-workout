@@ -37,4 +37,12 @@ export const cloudStorageService = {
     const { error } = await supabase.from('trainings').delete().eq('id', id)
     if (error) throw error
   },
+  async clearAllTrainings(): Promise<void> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+    const { error } = await supabase.from('trainings').delete().eq('user_id', user.id)
+    if (error) throw error
+  },
 }

@@ -3,6 +3,7 @@ import { useWorkoutStore } from '@/store/workoutStore'
 import { recommendationService } from '@/services/recommendations'
 import { RecommendationItem, WorkoutStats } from '@/types'
 import AddPastTraining from '@/components/AddPastTraining'
+import ClearDataButton from '@/components/ClearDataButton'
 
 export default function DashboardView() {
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
@@ -107,6 +108,7 @@ export default function DashboardView() {
         </div>
         <AddPastTraining />
       </div>
+      <ClearDataButton />
     </div>
   )
 }
