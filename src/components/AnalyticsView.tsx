@@ -52,18 +52,20 @@ export default function AnalyticsView() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-gray-800 rounded-xl p-4">
-          <p className="text-2xl font-black text-white">{allTrainings.length}</p>
-          <p className="text-gray-400 text-xs mt-1">Trainings gesamt</p>
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-2xl font-black text-white leading-none">{allTrainings.length}</p>
+          <p className="text-gray-400 text-xs mt-2 leading-tight">Gesamt</p>
         </div>
-        <div className="bg-gray-800 rounded-xl p-4">
-          <p className="text-2xl font-black text-white">{streak}</p>
-          <p className="text-gray-400 text-xs mt-1">Tage Streak</p>
+        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-2xl font-black text-white leading-none">{streak}</p>
+          <p className="text-gray-400 text-xs mt-2 leading-tight">Tage Streak</p>
         </div>
-        <div className="bg-gray-800 rounded-xl p-4">
-          <p className="text-lg font-black text-white truncate">{favorite ?? '–'}</p>
-          <p className="text-gray-400 text-xs mt-1">Lieblingsgruppe</p>
+        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-base font-black text-white leading-tight break-words">
+            {favorite ?? '–'}
+          </p>
+          <p className="text-gray-400 text-xs mt-2 leading-tight">Liebling</p>
         </div>
       </div>
 
