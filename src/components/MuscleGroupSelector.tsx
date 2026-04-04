@@ -4,47 +4,47 @@ import { useWorkoutStore } from '@/store/workoutStore'
 
 const MUSCLE_CONFIG: Record<MuscleGroup, { icon: string; base: string; active: string }> = {
   Brust: {
-    icon: '💪',
+    icon: '🏋️', // Bankdrücken = Brust
     base: 'bg-red-500/10 border-red-500/20 text-red-300',
     active: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30',
   },
   Rücken: {
-    icon: '🏊',
+    icon: '🚣', // Rudern = Rücken/Lats
     base: 'bg-blue-500/10 border-blue-500/20 text-blue-300',
     active: 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-500/30',
   },
   Schulter: {
-    icon: '🏋️',
+    icon: '🤸', // Überkopf-Bewegung = Schulter
     base: 'bg-violet-500/10 border-violet-500/20 text-violet-300',
     active: 'bg-violet-500 border-violet-500 text-white shadow-lg shadow-violet-500/30',
   },
   Bizeps: {
-    icon: '🦵',
+    icon: '💪', // Flexed bicep = Bizeps
     base: 'bg-orange-500/10 border-orange-500/20 text-orange-300',
     active: 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/30',
   },
   Trizeps: {
-    icon: '🦾',
+    icon: '🦾', // Armstärke = Trizeps
     base: 'bg-pink-500/10 border-pink-500/20 text-pink-300',
     active: 'bg-pink-500 border-pink-500 text-white shadow-lg shadow-pink-500/30',
   },
   Beine: {
-    icon: '🚴',
+    icon: '🦵', // Bein-Emoji = Beine
     base: 'bg-green-500/10 border-green-500/20 text-green-300',
     active: 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30',
   },
   Mobility: {
-    icon: '🧘',
+    icon: '🧘', // Yoga/Stretching = Mobility
     base: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-300',
     active: 'bg-yellow-500 border-yellow-500 text-white shadow-lg shadow-yellow-500/30',
   },
   Ausdauer: {
-    icon: '🏃',
+    icon: '🏃', // Laufen = Ausdauer
     base: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
     active: 'bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/30',
   },
   Eisbaden: {
-    icon: '🧊',
+    icon: '🥶', // Gefroren = Eisbaden
     base: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300',
     active: 'bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/30',
   },
