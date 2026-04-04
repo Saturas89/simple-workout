@@ -1,6 +1,6 @@
 # Simple Workout – Projektübersicht
 
-**Version:** 1.0.0 | **Status:** Produktion | **Deployment:** Vercel
+**Version:** 1.1.0 | **Status:** Produktion | **Deployment:** Vercel
 
 ---
 
@@ -11,7 +11,9 @@ Der Nutzer wählt jeden Tag aus, welche Muskelgruppen er trainiert hat.
 Die App speichert diese Auswahl lokal im Browser (IndexedDB) und zeigt ein Dashboard
 mit Statistiken und smarten Empfehlungen, was als nächstes trainiert werden sollte.
 
-**Kein Backend. Keine Accounts. Keine Cloud-Sync. Vollständig offline im Browser.**
+Nutzer können sich per Google oder E-Mail/Passwort (Supabase Auth) anmelden.
+Trainings werden dann geräteübergreifend in der Cloud synchronisiert.
+Ohne Login: vollständig offline im Browser (IndexedDB).
 
 ---
 
@@ -25,11 +27,24 @@ mit Statistiken und smarten Empfehlungen, was als nächstes trainiert werden sol
 - Kein Browser-Alert, keine Modals
 - Beim App-Start wird die heutige Auswahl automatisch aus IndexedDB geladen
 
-### 2. Dashboard
+### 2. Dashboard (Tab: Heute)
 - **3 Stats-Kacheln**: Anzahl Trainings, Durchschnitt pro Muskelgruppe, Top-Muskelgruppe
 - **Empfehlungen**: Top 3 vernachlässigte Muskelgruppen (Score-basiert, niedrigster Score = dringendster Bedarf)
 - **Historie**: Letzte 10 Tage, absteigend nach Datum sortiert
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
+
+### 3. Analytics (Tab: Verlauf)
+- **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
+- **Wöchentliche Aktivität**: Balkendiagramm — Trainingstage pro Woche, letzte 8 Wochen
+- **Muskelgruppen-Verteilung**: Horizontales Balkendiagramm — Häufigkeit jeder Gruppe (alle Zeit)
+- **Navigation**: Bottom Tab Bar (Heute / Verlauf)
+- **Bibliothek**: recharts
+
+### 4. Authentifizierung
+- Login / Registrierung per E-Mail + Passwort oder Google OAuth
+- Session bleibt erhalten (kein erneuter Login nötig)
+- Eingeloggt: Daten in Supabase (PostgreSQL, geräteübergreifend)
+- Nicht eingeloggt: Daten in IndexedDB (lokal)
 
 ---
 
@@ -79,13 +94,19 @@ simple-workout/
 │   ├── App.css              # Leer / minimale App-Styles
 │   ├── components/
 │   │   ├── MuscleGroupSelector.tsx   # Buttons + Speichern-Button
-│   │   └── DashboardView.tsx         # Stats, Empfehlungen, Historie
+│   │   ├── DashboardView.tsx         # Stats, Empfehlungen, Historie
+│   │   ├── AnalyticsView.tsx         # Charts: Wochenaktivität, Muskelverteilung
+│   │   └── AuthView.tsx              # Login / Registrierung
 │   ├── services/
 │   │   ├── storage.ts               # IndexedDB via idb (CRUD)
+│   │   ├── cloudStorage.ts          # Supabase CRUD
+│   │   ├── supabase.ts              # Supabase Client
+│   │   ├── analyticsService.ts      # Datentransformationen für Charts
 │   │   ├── recommendations.ts       # Score-Algorithmus + getWorkoutStats()
 │   │   └── recommendations.test.ts  # Vitest Unit Tests
 │   ├── store/
-│   │   └── workoutStore.ts          # Zustand Store (State + Actions)
+│   │   ├── workoutStore.ts          # Zustand Store (State + Actions)
+│   │   └── authStore.ts             # Auth State (user, signIn, signUp, signOut)
 │   └── types/
 │       └── index.ts                 # Alle TypeScript-Typen + Konstanten
 ├── docs/                    # Dokumentation
@@ -113,6 +134,8 @@ simple-workout/
 | E2E Tests | Cypress | 13.x |
 | Linting | ESLint v9 (Flat Config) + typescript-eslint v8 | 9.x / 8.x |
 | Formatter | Prettier | 3.x |
+| Auth + Cloud DB | Supabase | – |
+| Charts | recharts | 2.x |
 | Deployment | Vercel | – |
 
 ---
@@ -145,3 +168,6 @@ Build-Pipeline: `npm ci` → `tsc && vite build` → Deploy
 | WorkoutStats | Statistik: totalTrainings, average, topMuscleGroup, muscleGroupFrequency |
 | IDEAL_FREQUENCIES | Konstante: Zielfrequenz pro Muskelgruppe in 10 Tagen |
 | score | (trained / ideal) * 10 — niedriger = dringender |
+| WeeklyBar | Chart-Datenpunkt: { week: 'KW 14', count: number } |
+| MuscleBar | Chart-Datenpunkt: { group, count, color } |
+| Streak | Aufeinanderfolgende Tage mit mindestens einem Training |

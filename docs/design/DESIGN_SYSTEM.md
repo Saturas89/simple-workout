@@ -185,6 +185,76 @@ Liste: space-y-2
 
 ---
 
+## Bottom Tab Bar (Navigation)
+
+```
+sticky bottom-0 bg-gray-900 border-t border-white/5
+  max-w-2xl mx-auto grid grid-cols-2
+
+  Jeder Tab:
+    py-3 flex flex-col items-center gap-1 text-xs font-medium transition-colors
+    Aktiv:   text-violet-400
+    Inaktiv: text-gray-500 hover:text-gray-300
+```
+
+Tabs: **Heute** | **Verlauf**
+
+---
+
+## AnalyticsView – Charts (recharts)
+
+### Gemeinsame Chart-Styles
+
+| Property | Wert |
+|---|---|
+| Container | `bg-gray-800 rounded-2xl p-5` |
+| Gitterlinien (`CartesianGrid`) | `strokeDasharray="3 3"`, `stroke="#ffffff10"` |
+| Achstext | `fill="#9ca3af"`, `fontSize={11}` |
+| Tooltip Hintergrund | `#1f2937` (gray-800) |
+| Tooltip Text | `#f9fafb` (gray-50) |
+| Tooltip Rahmen | `border: none` |
+
+### Wöchentliche Aktivität (BarChart vertikal)
+
+```
+ResponsiveContainer width="100%" height={200}
+  BarChart data={weeklyData} barSize={24}
+    CartesianGrid vertical={false}
+    XAxis dataKey="week" → KW-Labels
+    YAxis allowDecimals={false}
+    Tooltip
+    Bar dataKey="count" fill="#8b5cf6" radius={[4,4,0,0]}
+```
+
+### Muskelgruppen-Verteilung (BarChart horizontal)
+
+```
+ResponsiveContainer width="100%" height={280}
+  BarChart layout="vertical" data={muscleData} barSize={14}
+    CartesianGrid horizontal={false}
+    XAxis type="number" allowDecimals={false}
+    YAxis type="category" dataKey="group" width={68}
+    Tooltip
+    Bar dataKey="count" radius={[0,4,4,0]}
+      Cell fill={entry.color}  ← individuelle Farbe je Muskelgruppe
+```
+
+### Muskelgruppen-Farben (Hex für recharts)
+
+| Gruppe | Hex |
+|---|---|
+| Brust | `#ef4444` |
+| Rücken | `#3b82f6` |
+| Schulter | `#8b5cf6` |
+| Bizeps | `#f97316` |
+| Trizeps | `#ec4899` |
+| Beine | `#22c55e` |
+| Mobility | `#eab308` |
+| Ausdauer | `#06b6d4` |
+| Eisbaden | `#6366f1` |
+
+---
+
 ## Responsive
 
 Kein klassisches Responsive-Design notwendig. Die App ist auf `max-w-2xl` beschränkt
