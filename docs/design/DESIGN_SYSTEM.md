@@ -124,16 +124,44 @@ App (min-h-screen, bg-gray-950)
 ### MuscleGroupSelector
 
 ```
-grid grid-cols-3 gap-2
-  → 9 Buttons (px-3 py-2.5, rounded-xl, border, transition-all)
-    data-active=true  → volle Farbe
-    data-active=false → transparenter Tint
+grid grid-cols-3 gap-2.5
+  → 9 Karten (Card-Style, rounded-2xl, border, transition-all duration-200)
 
-Speichern-Button (w-full, py-3, rounded-xl, text-sm font-bold):
-  - Leer:       bg-white/5, text-gray-500, cursor-not-allowed
-  - Bereit:     bg-violet-500, hover:bg-violet-400, text-white
-  - Gespeichert: bg-green-500, text-white, Text = "Gespeichert ✓" (3s)
+  Jede Karte:
+    flex flex-col items-center justify-center gap-2 py-4
+    Emoji:  text-xl leading-none  (zentriert)
+    Label:  text-xs font-semibold leading-none text-center truncate px-1
+
+  Inaktiv:
+    bg-{color}-500/10  border-{color}-500/20  text-{color}-300
+    hover: brightness-125
+
+  Aktiv:
+    bg-{color}-500  border-{color}-500  text-white
+    shadow-lg shadow-{color}-500/30  scale-[1.03]
+
+Speichern-Button (w-full, py-3.5, rounded-2xl, text-sm font-bold):
+  - Leer:        bg-white/5, text-gray-600, cursor-not-allowed
+  - Bereit:      bg-violet-500, hover:bg-violet-400, text-white
+                 shadow-lg shadow-violet-500/25
+                 Label: "{n} Gruppe(n) speichern"
+  - Gespeichert: bg-green-500, text-white, shadow-lg shadow-green-500/30
+                 Label: "✓ Gespeichert" (3s)
 ```
+
+### Muskelgruppen-Icons
+
+| Gruppe | Emoji |
+|---|---|
+| Brust | 💪 |
+| Rücken | 🏊 |
+| Schulter | 🏋️ |
+| Bizeps | 🦵 |
+| Trizeps | 🦾 |
+| Beine | 🚴 |
+| Mobility | 🧘 |
+| Ausdauer | 🏃 |
+| Eisbaden | 🧊 |
 
 ### DashboardView – Leer-Zustand
 
@@ -204,7 +232,7 @@ Formular (wenn offen):
 
 ## Animationen / Transitions
 
-- Muskelgruppen-Buttons: `transition-all duration-150`
+- Muskelgruppen-Karten: `transition-all duration-200`, aktiv: `scale-[1.03]`
 - Speichern-Button: `transition-all duration-200`
 - Keine weiteren Animationen
 
