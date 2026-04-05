@@ -61,8 +61,8 @@ export default function AnalyticsView() {
           <p className="text-2xl font-black text-app-text leading-none">{streak}</p>
           <p className="text-app-text-2 text-xs mt-2 leading-tight">Tage Streak</p>
         </div>
-        <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-          <p className="text-base font-black text-app-text leading-tight break-words">
+        <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px] overflow-hidden">
+          <p className="text-sm font-black text-app-text leading-tight truncate">
             {favorite ?? '–'}
           </p>
           <p className="text-app-text-2 text-xs mt-2 leading-tight">Liebling</p>

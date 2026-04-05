@@ -49,8 +49,8 @@ export default function DashboardView() {
             <p className="text-2xl font-black text-app-text leading-none">{stats.average}</p>
             <p className="text-app-text-2 text-xs mt-2 leading-tight">Ø pro Gruppe</p>
           </div>
-          <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-            <p className="text-base font-black text-app-text leading-tight break-words">
+          <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px] overflow-hidden">
+            <p className="text-sm font-black text-app-text leading-tight truncate">
               {stats.topMuscleGroup || '–'}
             </p>
             <p className="text-app-text-2 text-xs mt-2 leading-tight">Top Gruppe</p>
