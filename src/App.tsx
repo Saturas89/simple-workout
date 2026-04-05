@@ -14,7 +14,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>('heute')
   const [showSettings, setShowSettings] = useState(false)
   const { initialize: initWorkout } = useWorkoutStore()
-  const { user, isLoading: authLoading, initialize: initAuth, signOut } = useAuthStore()
+  const { user, isLoading: authLoading, initialize: initAuth } = useAuthStore()
 
   useEffect(() => {
     initAuth()
