@@ -1,7 +1,7 @@
 # REQ-009: Themes & Settings System
 
-**Status:** 🟢 DRAFT  
-**Version:** 1.0.0  
+**Status:** ✅ Implementiert  
+**Version:** 1.1.0  
 **Letzte Aktualisierung:** 2026-04-05
 
 ---
@@ -33,10 +33,10 @@ Benutzer können zwischen verschiedenen visuellen Designs wählen und ihr Profil
   - Text: Dunkles Rosa (#831843)
 
 **Funktionen:**
-- [ ] 2 Themes zur Auswahl
-- [ ] Sofortiger Wechsel (ohne Reload)
-- [ ] Icons für beide Themes
-- [ ] Smooth Theme-Übergänge
+- [x] 2 Themes zur Auswahl
+- [x] Sofortiger Wechsel (ohne Reload) — via CSS Custom Properties auf :root[data-theme]
+- [x] Icons für beide Themes
+- [x] Theme wird beim Store-Hydrate sofort angewendet (onRehydrateStorage)
 
 ### 2. Settings/Profile Modal
 
@@ -47,25 +47,23 @@ Benutzer können zwischen verschiedenen visuellen Designs wählen und ihr Profil
 **Sections:**
 
 #### 👤 Profil
-- [ ] Name eingeben & speichern
-- [ ] Email anzeigen (von Auth)
-- [ ] Name wird lokal gespeichert
-- [ ] Name wird in Header angezeigt (optional)
+- [x] Name eingeben & speichern
+- [x] Email anzeigen (von Auth)
+- [x] Name wird lokal gespeichert
+- [ ] Name wird in Header angezeigt (nicht implementiert)
 
 #### 🎨 Design
-- [ ] 2 Theme Cards zum Auswählen
-- [ ] Visuelles Feedback (Border + Scale)
-- [ ] "✓ Aktiv" Badge
-- [ ] Icon für jedes Theme
+- [x] 2 Theme Cards zum Auswählen
+- [x] Visuelles Feedback (Border + Scale)
+- [x] "✓ Aktiv" Badge
+- [x] Icon für jedes Theme
 
 #### 👀 Vorschau
-- [ ] Zeigt aktuelle Farben
-- [ ] Primär Farbe
-- [ ] Accent Farbe
+- [x] **Entfernt** — Vorschau-Sektion wurde aus dem Modal entfernt (kein Mehrwert, da das Theme sofort im Hintergrund sichtbar ist)
 
 #### Abmelden
-- [ ] Abmelden-Button am unteren Ende
-- [ ] Geht zurück zur AuthView
+- [x] Abmelden-Button am unteren Ende
+- [x] Geht zurück zur AuthView
 
 ### 3. Persistent Storage
 
@@ -84,10 +82,10 @@ Benutzer können zwischen verschiedenen visuellen Designs wählen und ihr Profil
 
 ### 4. Settings Button in Header
 
-- [ ] Zahnrad-Icon (SVG)
-- [ ] Responsive für Mobile & Desktop
-- [ ] Hover-Effekt
-- [ ] Öffnet SettingsModal
+- [x] Zahnrad-Icon (SVG)
+- [x] Responsive für Mobile & Desktop
+- [x] Hover-Effekt
+- [x] Öffnet SettingsModal
 
 ---
 
@@ -149,8 +147,43 @@ interface ThemeStore {
   }
   setTheme(theme): void
   updateProfile(profile): void
+  getThemeConfig(): ThemeConfig
+  getCurrentColors(): ThemeConfig['colors']
 }
 ```
+
+### CSS Custom Properties (Theme Switching)
+
+Theme-Wechsel wird über `data-theme` Attribut auf `document.documentElement` gesteuert.
+CSS Custom Properties in `src/index.css`:
+```css
+:root {
+  --app-bg:      3 7 18;       /* gray-950 */
+  --app-card:    17 24 39;     /* gray-900 */
+  --app-inner:   31 41 55;     /* gray-800 */
+  --app-primary: 139 92 246;   /* violet-500 */
+  /* ... weitere Farben */
+}
+:root[data-theme="pink"] {
+  --app-bg:      253 242 248;  /* #fdf2f8 */
+  --app-card:    252 231 243;  /* #fce7f3 */
+  --app-inner:   255 255 255;  /* white */
+  --app-primary: 236 72 153;   /* pink-500 */
+  /* ... weitere Farben */
+}
+```
+
+Tailwind-Config erweitert um semantische Farb-Tokens:
+```
+bg-app-bg / bg-app-card / bg-app-inner
+text-app-text / text-app-text-2 / text-app-text-3
+bg-app-primary / text-app-primary
+border-app-border (mit Opacity-Modifiern, z.B. border-app-border/5)
+```
+
+`applyTheme(theme)` wird aufgerufen:
+- Beim `setTheme()` (Nutzeraktion)
+- Beim `onRehydrateStorage` (App-Start, aus localStorage)
 
 ### Zustand Persist
 - **Key:** 'theme-store'
@@ -161,15 +194,15 @@ interface ThemeStore {
 
 ## ✅ Acceptance Criteria
 
-- [ ] Zwei Themes verfügbar (Dark + Pink)
-- [ ] Theme-Auswahl speichert sich lokal
-- [ ] Settings Modal öffnet/schließt korrekt
-- [ ] Profile Name wird gespeichert & angezeigt
-- [ ] Einstellungen überleben Browser-Reload
-- [ ] Responsive auf Mobile & Desktop
-- [ ] Smooth Theme-Übergänge
-- [ ] Icons zeigen korrektes Theme (💪 vs 👑)
-- [ ] Abmelden-Button funktioniert
+- [x] Zwei Themes verfügbar (Dark + Pink)
+- [x] Theme-Auswahl speichert sich lokal
+- [x] Settings Modal öffnet/schließt korrekt
+- [x] Profile Name wird gespeichert
+- [x] Einstellungen überleben Browser-Reload (Zustand persist + onRehydrateStorage)
+- [x] Responsive auf Mobile & Desktop
+- [x] Theme wird beim Store-Hydrate sofort angewendet (onRehydrateStorage)
+- [x] Icons zeigen korrektes Theme (💪 vs 👑)
+- [x] Abmelden-Button funktioniert
 
 ---
 
@@ -195,4 +228,5 @@ interface ThemeStore {
 | Version | Datum | Autor | Änderung |
 |---------|-------|-------|----------|
 | 1.0.0 | 2026-04-05 | Claude | Initiale Version mit Power Mode + Prinzessin Mode |
+| 1.1.0 | 2026-04-05 | Claude | Fix: Theme-Farben werden jetzt korrekt über CSS Custom Properties angewendet; Vorschau-Sektion entfernt |
 

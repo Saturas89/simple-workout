@@ -34,16 +34,16 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center">
-      <div className="bg-gray-900 w-full md:w-96 rounded-t-2xl md:rounded-lg shadow-xl max-h-[90vh] overflow-y-auto border border-white/5">
+      <div className="bg-app-card w-full md:w-96 rounded-t-2xl md:rounded-lg shadow-xl max-h-[90vh] overflow-y-auto border border-white/5">
         {/* Header */}
-        <div className="sticky top-0 bg-gray-900 border-b border-white/5 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">⚙️ Einstellungen</h2>
+        <div className="sticky top-0 bg-app-card border-b border-app-border/5 px-6 py-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-app-text">⚙️ Einstellungen</h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-white/5 rounded-lg transition-colors"
+            className="p-1 hover:bg-app-border/5 rounded-lg transition-colors"
           >
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-app-text-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -62,10 +62,10 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
         <div className="px-6 py-6 space-y-8">
           {/* Profile Section */}
           <section>
-            <h3 className="text-lg font-bold text-white mb-4">👤 Profil</h3>
+            <h3 className="text-lg font-bold text-app-text mb-4">👤 Profil</h3>
             <div className="space-y-3">
               <label className="block">
-                <span className="text-sm font-medium text-gray-400 block mb-2">Dein Name</span>
+                <span className="text-sm font-medium text-app-text-2 block mb-2">Dein Name</span>
                 <input
                   type="text"
                   value={name}
@@ -73,16 +73,16 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                   onBlur={handleNameChange}
                   onKeyDown={handleKeyDown}
                   placeholder="Dein Name eingeben..."
-                  className="w-full px-4 py-2 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-white bg-gray-800"
+                  className="w-full px-4 py-2 border border-app-border/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-app-primary text-app-text bg-app-inner"
                 />
               </label>
-              <p className="text-xs text-gray-500">Email: {user?.email}</p>
+              <p className="text-xs text-app-text-3">Email: {user?.email}</p>
             </div>
           </section>
 
           {/* Theme Selection */}
           <section>
-            <h3 className="text-lg font-bold text-white mb-4">🎨 Design</h3>
+            <h3 className="text-lg font-bold text-app-text mb-4">🎨 Design</h3>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(THEMES).map(([themeKey, themeConfig]) => (
                 <button
@@ -90,54 +90,33 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                   onClick={() => handleThemeChange(themeKey as Theme)}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     theme === themeKey
-                      ? `border-violet-500 bg-violet-500/10 shadow-lg scale-105`
-                      : `border-white/10 hover:border-white/20`
+                      ? `border-app-primary bg-app-primary/10 shadow-lg scale-105`
+                      : `border-app-border/10 hover:border-app-border/20`
                   }`}
                 >
                   <div className="text-4xl mb-2">{themeConfig.icon}</div>
-                  <div className="font-bold text-white text-sm">{themeConfig.label}</div>
+                  <div className="font-bold text-app-text text-sm">{themeConfig.label}</div>
                   {theme === themeKey && (
-                    <div className="text-xs text-violet-400 mt-1">✓ Aktiv</div>
+                    <div className="text-xs text-app-primary mt-1">✓ Aktiv</div>
                   )}
                 </button>
               ))}
             </div>
           </section>
 
-          {/* Theme Preview */}
-          <section>
-            <h3 className="text-lg font-bold text-white mb-4">👀 Vorschau</h3>
-            <div className="bg-gray-800 border border-white/10 rounded-lg p-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: THEMES[theme].colors.primary }}
-                ></div>
-                <span className="text-sm text-gray-400">Primär Farbe</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: THEMES[theme].colors.accent }}
-                ></div>
-                <span className="text-sm text-gray-400">Accent Farbe</span>
-              </div>
-            </div>
-          </section>
-
           {/* Storage Info */}
           <section className="border-t border-white/5 pt-6">
-            <h3 className="text-sm font-medium text-gray-500">
+            <h3 className="text-sm font-medium text-app-text-3">
               ℹ️ Deine Einstellungen werden automatisch lokal gespeichert.
             </h3>
           </section>
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-gray-900 border-t border-white/5 px-6 py-4 space-y-3">
+        <div className="sticky bottom-0 bg-app-card border-t border-app-border/5 px-6 py-4 space-y-3">
           <button
             onClick={onClose}
-            className="w-full bg-violet-600 text-white py-3 rounded-lg font-bold hover:bg-violet-700 transition-colors"
+            className="w-full bg-app-primary text-white py-3 rounded-lg font-bold hover:bg-app-primary/90 transition-colors"
           >
             Fertig ✓
           </button>

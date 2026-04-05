@@ -105,7 +105,7 @@ export default function MuscleGroupSelector() {
           saved
             ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
             : selected.length > 0
-              ? 'bg-violet-500 hover:bg-violet-400 text-white shadow-lg shadow-violet-500/25'
+              ? 'bg-app-primary hover:bg-app-primary/90 text-white shadow-lg shadow-app-primary/25'
               : 'bg-white/5 text-gray-600 cursor-not-allowed'
         }`}
       >

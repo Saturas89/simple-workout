@@ -1,6 +1,6 @@
 # Simple Workout – Projektübersicht
 
-**Version:** 1.2.0 | **Status:** Produktion | **Deployment:** Vercel
+**Version:** 1.4.0 | **Status:** Produktion | **Deployment:** Vercel
 
 ---
 
@@ -33,6 +33,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Historie**: Letzte 10 Tage, absteigend nach Datum sortiert
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
 - **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
+- **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
 
 ### 3. Analytics (Tab: Verlauf)
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
@@ -46,6 +47,14 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - Session bleibt erhalten (kein erneuter Login nötig)
 - Eingeloggt: Daten in Supabase (PostgreSQL, geräteübergreifend)
 - Nicht eingeloggt: Daten in IndexedDB (lokal)
+
+### 5. Einstellungen & Design-Themes
+- Zahnrad-Icon oben rechts öffnet SettingsModal (Bottom Sheet auf Mobile)
+- **Power Mode** (Standard): dunkles Design mit Violett-Akzent
+- **Prinzessin Mode**: helles Rosa-Design mit Pink-Akzent
+- Theme-Wechsel sofort wirksam — ohne Reload — über CSS Custom Properties (`data-theme` auf `<html>`)
+- Theme und Profil-Name werden lokal in localStorage persistiert (Zustand persist)
+- Alle Trainings löschbar über Einstellungen / Dashboard (Sicherheitsabfrage)
 
 ---
 
@@ -98,6 +107,8 @@ simple-workout/
 │   │   ├── DashboardView.tsx         # Stats, Empfehlungen, Historie
 │   │   ├── AnalyticsView.tsx         # Charts: Wochenaktivität, Muskelverteilung
 │   │   ├── AddPastTraining.tsx       # Dezentes Inline-Formular: vergangene Trainings nachtragen
+│   │   ├── ClearDataButton.tsx       # Alle Trainingsdaten löschen (Inline-Sicherheitsabfrage)
+│   │   └── SettingsModal.tsx          # Einstellungen: Theme-Auswahl, Profil-Name, Abmelden
 │   │   └── AuthView.tsx              # Login / Registrierung
 │   ├── services/
 │   │   ├── storage.ts               # IndexedDB via idb (CRUD)
@@ -108,9 +119,11 @@ simple-workout/
 │   │   └── recommendations.test.ts  # Vitest Unit Tests
 │   ├── store/
 │   │   ├── workoutStore.ts          # Zustand Store (State + Actions)
-│   │   └── authStore.ts             # Auth State (user, signIn, signUp, signOut)
-│   └── types/
-│       └── index.ts                 # Alle TypeScript-Typen + Konstanten
+│   │   ├── authStore.ts             # Auth State (user, signIn, signUp, signOut)
+│   │   └── themeStore.ts            # Theme + Profil (persist → localStorage)
+│   ├── types/
+│   │   ├── index.ts                 # Workout-Typen + Konstanten
+│   │   └── theme.ts                 # Theme-Typen, THEMES-Config, UserProfile
 ├── docs/                    # Dokumentation
 ├── eslint.config.js         # ESLint v9 Flat Config
 ├── tailwind.config.ts       # Tailwind Konfiguration

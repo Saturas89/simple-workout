@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Theme CSS Variables ─────────────────────────────────────────────────── */
+/* Values are space-separated R G B triplets so Tailwind opacity modifiers     */
+/* (e.g. bg-app-primary/20) work correctly.                                    */
+:root {
+  --app-bg:      3 7 18;         /* gray-950  #030712 */
+  --app-card:    17 24 39;       /* gray-900  #111827 */
+  --app-inner:   31 41 55;       /* gray-800  #1f2937 */
+  --app-text:    255 255 255;    /* white */
+  --app-text-2:  156 163 175;    /* gray-400  #9ca3af */
+  --app-text-3:  107 114 128;    /* gray-500  #6b7280 */
+  --app-primary: 139 92 246;     /* violet-500 #8b5cf6 */
+  --app-border:  255 255 255;    /* white (used with low opacity) */
+}
+
+:root[data-theme="pink"] {
+  --app-bg:      253 242 248;    /* #fdf2f8 */
+  --app-card:    252 231 243;    /* #fce7f3 */
+  --app-inner:   255 255 255;    /* white */
+  --app-text:    131 24 67;      /* #831843 */
+  --app-text-2:  157 23 77;      /* #9d174d */
+  --app-text-3:  190 24 93;      /* #be185d */
+  --app-primary: 236 72 153;     /* pink-500 #ec4899 */
+  --app-border:  131 24 67;      /* #831843 */
+}
+
 * {
   -webkit-tap-highlight-color: transparent;
 }
@@ -13,7 +38,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #030712;
+  background-color: rgb(var(--app-bg));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

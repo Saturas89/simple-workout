@@ -14,6 +14,7 @@ interface WorkoutStore {
   addTrainingForDate: (date: string, muscleGroups: MuscleGroup[]) => Promise<void>
   getTrainingsFromLastDays: (days: number) => Promise<TrainingEntry[]>
   deleteTraining: (id: string) => Promise<void>
+  clearAllTrainings: () => Promise<void>
 }
 
 const getStorage = async () => {
@@ -98,5 +99,12 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
     set((state) => ({
       allTrainings: state.allTrainings.filter((t) => t.id !== id),
     }))
+  },
+
+  clearAllTrainings: async () => {
+    const storage = await getStorage()
+    await storage.clearAllTrainings()
+
+    set({ allTrainings: [], todaySelection: null })
   },
 }))

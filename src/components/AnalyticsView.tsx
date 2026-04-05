@@ -10,17 +10,8 @@ import {
   Cell,
 } from 'recharts'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { useThemeStore } from '@/store/themeStore'
 import { analyticsService } from '@/services/analyticsService'
-
-const axisStyle = { fill: '#9ca3af', fontSize: 11 }
-
-const tooltipStyle = {
-  backgroundColor: '#1f2937',
-  border: 'none',
-  borderRadius: 8,
-  color: '#f9fafb',
-  fontSize: 12,
-}
 
 export default function AnalyticsView() {
   const { allTrainings } = useWorkoutStore()
@@ -38,13 +29,22 @@ export default function AnalyticsView() {
     () => analyticsService.getFavoriteMuscleGroup(allTrainings),
     [allTrainings]
   )
+  const colors = useThemeStore((s) => s.getCurrentColors())
+  const axisStyle = { fill: colors.textSecondary, fontSize: 11 }
+  const tooltipStyle = {
+    backgroundColor: colors.cardBg,
+    border: 'none',
+    borderRadius: 8,
+    color: colors.text,
+    fontSize: 12,
+  }
 
   if (allTrainings.length === 0) {
     return (
       <div className="py-10 text-center">
         <p className="text-3xl mb-3">📊</p>
-        <p className="text-gray-400 text-sm">Noch keine Daten für Analysen.</p>
-        <p className="text-gray-600 text-xs mt-1">Speichere dein erstes Training im Tab Heute.</p>
+        <p className="text-app-text-2 text-sm">Noch keine Daten für Analysen.</p>
+        <p className="text-app-text-3 text-xs mt-1">Speichere dein erstes Training im Tab Heute.</p>
       </div>
     )
   }
@@ -53,30 +53,30 @@ export default function AnalyticsView() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-          <p className="text-2xl font-black text-white leading-none">{allTrainings.length}</p>
-          <p className="text-gray-400 text-xs mt-2 leading-tight">Gesamt</p>
+        <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-2xl font-black text-app-text leading-none">{allTrainings.length}</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">Gesamt</p>
         </div>
-        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-          <p className="text-2xl font-black text-white leading-none">{streak}</p>
-          <p className="text-gray-400 text-xs mt-2 leading-tight">Tage Streak</p>
+        <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-2xl font-black text-app-text leading-none">{streak}</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">Tage Streak</p>
         </div>
-        <div className="bg-gray-800 rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-          <p className="text-base font-black text-white leading-tight break-words">
+        <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
+          <p className="text-base font-black text-app-text leading-tight break-words">
             {favorite ?? '–'}
           </p>
-          <p className="text-gray-400 text-xs mt-2 leading-tight">Liebling</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">Liebling</p>
         </div>
       </div>
 
       {/* Weekly Activity */}
-      <div className="bg-gray-800 rounded-2xl p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+      <div className="bg-app-inner rounded-2xl p-5">
+        <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
           Wöchentliche Aktivität
         </p>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={weeklyData} barSize={22}>
-            <CartesianGrid vertical={false} stroke="#ffffff10" strokeDasharray="3 3" />
+            <CartesianGrid vertical={false} stroke="rgba(var(--app-border), 0.06)" strokeDasharray="3 3" />
             <XAxis dataKey="week" tick={axisStyle} axisLine={false} tickLine={false} />
             <YAxis
               allowDecimals={false}
@@ -87,22 +87,22 @@ export default function AnalyticsView() {
             />
             <Tooltip
               contentStyle={tooltipStyle}
-              cursor={{ fill: '#ffffff08' }}
+              cursor={{ fill: "rgba(128, 128, 128, 0.05)" }}
               formatter={(value) => [`${value} Training(s)`, '']}
             />
-            <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill={colors.primary} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       {/* Muscle Group Distribution */}
-      <div className="bg-gray-800 rounded-2xl p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+      <div className="bg-app-inner rounded-2xl p-5">
+        <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
           Muskelgruppen-Verteilung
         </p>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart layout="vertical" data={muscleData} barSize={14}>
-            <CartesianGrid horizontal={false} stroke="#ffffff10" strokeDasharray="3 3" />
+            <CartesianGrid horizontal={false} stroke="rgba(var(--app-border), 0.06)" strokeDasharray="3 3" />
             <XAxis
               type="number"
               allowDecimals={false}
@@ -120,7 +120,7 @@ export default function AnalyticsView() {
             />
             <Tooltip
               contentStyle={tooltipStyle}
-              cursor={{ fill: '#ffffff08' }}
+              cursor={{ fill: "rgba(128, 128, 128, 0.05)" }}
               formatter={(value) => [`${value}x trainiert`, '']}
             />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
