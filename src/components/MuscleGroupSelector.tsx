@@ -4,48 +4,48 @@ import { useWorkoutStore } from '@/store/workoutStore'
 
 const MUSCLE_CONFIG: Record<MuscleGroup, { icon: string; base: string; active: string }> = {
   Brust: {
-    icon: '🏋️', // Bankdrücken = Brust
-    base: 'bg-red-500/10 border-red-500/20 text-red-300',
+    icon: '🏋️',
+    base: 'bg-red-500/10 border-red-500/40 text-red-600',
     active: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30',
   },
   Rücken: {
-    icon: '🚣', // Rudern = Rücken/Lats
-    base: 'bg-blue-500/10 border-blue-500/20 text-blue-300',
+    icon: '🚣',
+    base: 'bg-blue-500/10 border-blue-500/40 text-blue-600',
     active: 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-500/30',
   },
   Schulter: {
-    icon: '🤸', // Überkopf-Bewegung = Schulter
-    base: 'bg-violet-500/10 border-violet-500/20 text-violet-300',
+    icon: '🤸',
+    base: 'bg-violet-500/10 border-violet-500/40 text-violet-600',
     active: 'bg-violet-500 border-violet-500 text-white shadow-lg shadow-violet-500/30',
   },
   Bizeps: {
-    icon: '💪', // Flexed bicep = Bizeps
-    base: 'bg-orange-500/10 border-orange-500/20 text-orange-300',
+    icon: '💪',
+    base: 'bg-orange-500/10 border-orange-500/40 text-orange-600',
     active: 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/30',
   },
   Trizeps: {
-    icon: '🦾', // Armstärke = Trizeps
-    base: 'bg-pink-500/10 border-pink-500/20 text-pink-300',
+    icon: '🦾',
+    base: 'bg-pink-500/10 border-pink-500/40 text-pink-600',
     active: 'bg-pink-500 border-pink-500 text-white shadow-lg shadow-pink-500/30',
   },
   Beine: {
-    icon: '🦵', // Bein-Emoji = Beine
-    base: 'bg-green-500/10 border-green-500/20 text-green-300',
+    icon: '🦵',
+    base: 'bg-green-500/10 border-green-500/40 text-green-600',
     active: 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30',
   },
   Mobility: {
-    icon: '🧘', // Yoga/Stretching = Mobility
-    base: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-300',
+    icon: '🧘',
+    base: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-600',
     active: 'bg-yellow-500 border-yellow-500 text-white shadow-lg shadow-yellow-500/30',
   },
   Ausdauer: {
-    icon: '🏃', // Laufen = Ausdauer
-    base: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
+    icon: '🏃',
+    base: 'bg-cyan-500/10 border-cyan-500/40 text-cyan-700',
     active: 'bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/30',
   },
   Eisbaden: {
-    icon: '🥶', // Gefroren = Eisbaden
-    base: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300',
+    icon: '🥶',
+    base: 'bg-indigo-500/10 border-indigo-500/40 text-indigo-600',
     active: 'bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/30',
   },
 }
@@ -86,7 +86,7 @@ export default function MuscleGroupSelector() {
               key={group}
               onClick={() => toggleMuscleGroup(group)}
               className={`flex flex-col items-center justify-center gap-2 py-4 rounded-2xl border transition-all duration-200 ${
-                isActive ? cfg.active + ' scale-[1.03]' : cfg.base + ' hover:brightness-125'
+                isActive ? cfg.active + ' scale-[1.03]' : cfg.base + ' hover:brightness-110'
               }`}
             >
               <span className="text-xl leading-none">{cfg.icon}</span>
@@ -106,10 +106,14 @@ export default function MuscleGroupSelector() {
             ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
             : selected.length > 0
               ? 'bg-app-primary hover:bg-app-primary/90 text-white shadow-lg shadow-app-primary/25'
-              : 'bg-white/5 text-gray-600 cursor-not-allowed'
+              : 'bg-app-border/8 text-app-text-3 cursor-not-allowed'
         }`}
       >
-        {saved ? '✓ Gespeichert' : selected.length > 0 ? `${selected.length} Gruppe${selected.length > 1 ? 'n' : ''} speichern` : 'Muskelgruppen auswählen'}
+        {saved
+          ? '✓ Gespeichert'
+          : selected.length > 0
+            ? `${selected.length} Gruppe${selected.length > 1 ? 'n' : ''} speichern`
+            : 'Muskelgruppen auswählen'}
       </button>
     </div>
   )
