@@ -14,11 +14,15 @@ export default function DashboardView() {
 
   useEffect(() => {
     const loadData = async () => {
-      const trainings = await getTrainingsFromLastDays(10)
-      setLast10Days(trainings)
-      if (trainings.length > 0) {
-        setRecommendations(recommendationService.generateRecommendations(trainings, 3))
-        setStats(recommendationService.getWorkoutStats(trainings))
+      const recent = await getTrainingsFromLastDays(10)
+      setLast10Days(recent)
+      // Recommendations use all-time data to find "days since last trained"
+      if (allTrainings.length > 0) {
+        setRecommendations(recommendationService.generateRecommendations(allTrainings, 3))
+        setStats(recommendationService.getWorkoutStats(recent))
+      } else {
+        setRecommendations([])
+        setStats(null)
       }
     }
     loadData()
@@ -64,22 +68,40 @@ export default function DashboardView() {
             Nächstes Training
           </p>
           <div className="space-y-2">
-            {recommendations.map((rec, index) => (
-              <div key={rec.muscleGroup} className="bg-app-inner rounded-xl p-4 flex items-center gap-4">
-                <div className="w-7 h-7 rounded-lg bg-app-primary/20 text-app-primary flex items-center justify-center text-xs font-bold shrink-0">
-                  {index + 1}
+            {recommendations.map((rec) => {
+              const weekProgress = Math.min(rec.trainedThisWeek / rec.weeklyGoal, 1)
+              return (
+                <div key={rec.muscleGroup} className="bg-app-inner rounded-xl p-4 space-y-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-app-text text-sm">{rec.muscleGroup}</p>
+                      <p className="text-app-text-3 text-xs mt-0.5">{rec.reason}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-xs font-semibold text-app-text">
+                        {rec.trainedThisWeek}
+                        <span className="text-app-text-3 font-normal">/{rec.weeklyGoal}×</span>
+                      </p>
+                      <p className="text-[10px] text-app-text-3">diese Woche</p>
+                    </div>
+                  </div>
+                  {/* Weekly progress bar */}
+                  <div className="h-1 bg-app-border/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${weekProgress * 100}%`,
+                        backgroundColor: weekProgress >= 1
+                          ? 'rgb(var(--app-primary))'
+                          : weekProgress >= 0.5
+                            ? 'rgb(var(--app-primary) / 0.7)'
+                            : 'rgb(var(--app-primary) / 0.4)',
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-app-text text-sm">{rec.muscleGroup}</p>
-                  <p className="text-app-text-3 text-xs truncate">{rec.reason}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-xs text-gray-500">
-                    {rec.trainedInLast10Days}x / {rec.ideal}x
-                  </p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}

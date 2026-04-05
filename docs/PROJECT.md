@@ -77,17 +77,28 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 
 ## Empfehlungsalgorithmus
 
+Rotationsbasiert — die 3 am längsten nicht trainierten Muskelgruppen werden empfohlen.
+
 ```
-score = (trainedInLast10Days / idealFrequency) * 10
+cycleDays  = 7 / weeklyGoal
+score      = daysSinceLast / cycleDays    // höher = dringender
 ```
 
-Die 3 Gruppen mit dem niedrigsten Score werden empfohlen.
+**Wochenziele** (`WEEKLY_GOALS` in `types/index.ts`):
+| Muskelgruppe | Ziel/Woche |
+|---|---|
+| Eisbaden | **3×** |
+| Mobility | **3×** |
+| Brust / Rücken / Schulter / Beine / Ausdauer | 2× |
+| Bizeps / Trizeps | 1× |
 
-**Begründungstext** (in `recommendations.ts → getReason()`):
-- 0% des Ziels: `"{Gruppe} brauchte definitiv Arbeit!"`
-- < 50%: `"{Gruppe} brauchte noch viel mehr Trainieren!"`
-- < 50–100%: `"{Gruppe} brauchte noch etwas mehr Aufmerksamkeit!"`
-- ≥ 100%: `"{Gruppe} ist gut im Plan!"`
+**Sortierung**: absteigend nach Score — wer am längsten nicht trainiert wurde (relativ zum Ziel) steht oben.  
+Nie trainiert → Score 999 (immer höchste Priorität).
+
+**Anzeige im Dashboard**:
+- Muskelgruppen-Name + Tage seit letztem Training
+- `X/Y× diese Woche` + Fortschrittsbalken (leer → halb → voll)
+- Alle Trainings aller Zeiten werden für die Berechnung genutzt (nicht nur letzte 10 Tage)
 
 ---
 

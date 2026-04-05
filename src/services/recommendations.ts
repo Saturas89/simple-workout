@@ -1,77 +1,114 @@
-import { RecommendationItem, TrainingEntry, MUSCLE_GROUPS, IDEAL_FREQUENCIES } from '@/types'
+import {
+  RecommendationItem,
+  TrainingEntry,
+  MuscleGroup,
+  MUSCLE_GROUPS,
+  IDEAL_FREQUENCIES,
+  WEEKLY_GOALS,
+} from '@/types'
+
+/** Returns Monday of the week containing `date` as a YYYY-MM-DD string */
+function getMondayOf(date: Date): string {
+  const d = new Date(date)
+  const day = d.getDay() // 0 = Sun
+  const diff = (day === 0 ? -6 : 1) - day
+  d.setDate(d.getDate() + diff)
+  return d.toISOString().split('T')[0]
+}
 
 export const recommendationService = {
-  generateRecommendations(trainings: TrainingEntry[], topN: number = 3): RecommendationItem[] {
-    // Count frequency of each muscle group in the last 10 days
-    const frequencies: Record<string, number> = {}
+  generateRecommendations(
+    trainings: TrainingEntry[],
+    topN: number = 3,
+  ): RecommendationItem[] {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const todayStr = today.toISOString().split('T')[0]
+    const mondayStr = getMondayOf(today)
 
-    MUSCLE_GROUPS.forEach((group) => {
-      frequencies[group] = 0
+    // Last training date and this-week count per group
+    const lastDate: Record<MuscleGroup, string | null> = {} as any
+    const thisWeekCount: Record<MuscleGroup, number> = {} as any
+    MUSCLE_GROUPS.forEach((g) => {
+      lastDate[g] = null
+      thisWeekCount[g] = 0
     })
 
-    trainings.forEach((training) => {
-      training.muscleGroups.forEach((group) => {
-        frequencies[group]++
+    trainings.forEach((t) => {
+      t.muscleGroups.forEach((g) => {
+        if (!lastDate[g] || t.date > lastDate[g]!) lastDate[g] = t.date
+        if (t.date >= mondayStr && t.date <= todayStr) thisWeekCount[g]++
       })
     })
 
-    // Calculate scores based on ideal frequencies
-    const scores = MUSCLE_GROUPS.map((group) => {
-      const trained = frequencies[group] || 0
-      const ideal = IDEAL_FREQUENCIES[group]
-      const score = (trained / ideal) * 10
+    const items: RecommendationItem[] = MUSCLE_GROUPS.map((group) => {
+      const last = lastDate[group]
+      const weeklyGoal = WEEKLY_GOALS[group]
+      const cycleDays = 7 / weeklyGoal // ideal interval between sessions
+
+      let daysSinceLast: number
+      let score: number
+
+      if (!last) {
+        daysSinceLast = -1
+        score = 999 // never trained → always highest priority
+      } else {
+        const lastMs = new Date(last).getTime()
+        daysSinceLast = Math.floor((today.getTime() - lastMs) / (1000 * 60 * 60 * 24))
+        score = daysSinceLast / cycleDays
+      }
 
       return {
         muscleGroup: group,
         score,
-        trainedInLast10Days: trained,
-        ideal,
-        reason: this.getReason(group, trained, ideal),
+        daysSinceLast,
+        weeklyGoal,
+        trainedThisWeek: thisWeekCount[group],
+        reason: buildReason(group, daysSinceLast, weeklyGoal, thisWeekCount[group]),
       }
     })
 
-    // Sort by score (lowest first = most needed)
-    return scores.sort((a, b) => a.score - b.score).slice(0, topN)
-  },
-
-  getReason(group: string, trained: number, ideal: number): string {
-    const percentage = Math.round((trained / ideal) * 100)
-
-    if (percentage === 0) {
-      return `${group} brauchte definitiv Arbeit!`
-    } else if (percentage < 50) {
-      return `${group} brauchte noch viel mehr Trainieren!`
-    } else if (percentage < 100) {
-      return `${group} brauchte noch etwas mehr Aufmerksamkeit!`
-    } else {
-      return `${group} ist gut im Plan!`
-    }
+    // Sort by score descending (most overdue first), then take topN
+    return items.sort((a, b) => b.score - a.score).slice(0, topN)
   },
 
   getWorkoutStats(trainings: TrainingEntry[]) {
     const frequencies: Record<string, number> = {}
     let totalTrainings = 0
 
-    MUSCLE_GROUPS.forEach((group) => {
-      frequencies[group] = 0
-    })
+    MUSCLE_GROUPS.forEach((group) => { frequencies[group] = 0 })
 
     trainings.forEach((training) => {
-      training.muscleGroups.forEach((group) => {
-        frequencies[group]++
-      })
+      training.muscleGroups.forEach((group) => { frequencies[group]++ })
       totalTrainings++
     })
 
-    const topMuscleGroup = Object.entries(frequencies).reduce((a, b) => (a[1] > b[1] ? a : b))[0]
+    const topMuscleGroup = Object.entries(frequencies).reduce((a, b) =>
+      a[1] > b[1] ? a : b,
+    )[0]
 
     const average = totalTrainings > 0 ? totalTrainings / MUSCLE_GROUPS.length : 0
 
     return {
       totalTrainings,
       average: parseFloat(average.toFixed(1)),
-      topMuscleGroup: (topMuscleGroup as any) || null,
-      muscleGroupFrequency: frequencies,
+      topMuscleGroup: (topMuscleGroup as MuscleGroup) || null,
+      muscleGroupFrequency: frequencies as Record<MuscleGroup, number>,
     }
   },
 }
+
+function buildReason(
+  _group: MuscleGroup,
+  daysSinceLast: number,
+  weeklyGoal: number,
+  trainedThisWeek: number,
+): string {
+  if (daysSinceLast === -1) return 'Noch nie trainiert'
+  if (daysSinceLast === 0) return 'Heute trainiert'
+  if (daysSinceLast === 1) return `Gestern — ${trainedThisWeek}/${weeklyGoal}× diese Woche`
+  return `Vor ${daysSinceLast} Tagen — ${trainedThisWeek}/${weeklyGoal}× diese Woche`
+}
+
+// Keep old export name for any direct imports
+export { IDEAL_FREQUENCIES }
