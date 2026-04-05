@@ -34,6 +34,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
 - **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
 - **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
+- **Einzeleintrag löschen**: Swipe nach links öffnet roten Löschen-Button; weiter swipen (>180px) löscht direkt; sanfte Height-Collapse-Animation
 
 ### 3. Analytics (Tab: Verlauf)
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
@@ -108,6 +109,7 @@ simple-workout/
 │   │   ├── AnalyticsView.tsx         # Charts: Wochenaktivität, Muskelverteilung
 │   │   ├── AddPastTraining.tsx       # Dezentes Inline-Formular: vergangene Trainings nachtragen
 │   │   ├── ClearDataButton.tsx       # Alle Trainingsdaten löschen (Inline-Sicherheitsabfrage)
+│   │   ├── SwipeableEntry.tsx        # Trainingseintrag mit Swipe-to-Delete
 │   │   └── SettingsModal.tsx          # Einstellungen: Theme-Auswahl, Profil-Name, Abmelden
 │   │   └── AuthView.tsx              # Login / Registrierung
 │   ├── services/

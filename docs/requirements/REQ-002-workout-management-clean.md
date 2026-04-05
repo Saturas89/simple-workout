@@ -20,6 +20,7 @@ Der Nutzer wählt täglich aus, welche Muskelgruppen er trainiert hat, und speic
 - **FR-2.6** ✅ Speichern-Button deaktiviert wenn keine Auswahl
 - **FR-2.7** ✅ Vergangene Tage nachtragen (dezente Funktion, selten genutzt)
 - **FR-2.8** ✅ Alle Trainingsdaten löschen (mit Sicherheitsabfrage, ohne Browser-Dialogs)
+- **FR-2.9** ✅ Einzelnen Trainingseintrag per Swipe löschen
 
 ## Nicht implementiert (kein Bedarf)
 
@@ -69,3 +70,15 @@ interface TrainingEntry {
 - Während Löschvorgang: Ladezustand „Wird gelöscht…"
 - Store-Action: `clearAllTrainings()` → löscht aus IndexedDB oder Supabase (je nach Login-Status), setzt `allTrainings: []` und `todaySelection: null`
 - Service-Methoden: `storageService.clearAllTrainings()` (IndexedDB `clear()`), `cloudStorageService.clearAllTrainings()` (Supabase DELETE WHERE user_id)
+
+### `src/components/SwipeableEntry.tsx` (FR-2.9)
+- Jeder Eintrag in der Letzte-10-Tage-Liste ist swipebar (nach links)
+- **Swipe-Mechanismus**: native Touch-Events (`onTouchStart`, `onTouchMove`, `onTouchEnd`), kein externes Package
+- `SNAP_PX = 72`: Swipt man weiter als 72px links → Eintrag snappt auf, roter Löschen-Button erscheint rechts
+- `AUTO_DELETE_PX = 180`: Swipt man weiter als 180px → Eintrag wird direkt gelöscht (kein Tap auf Button nötig)
+- **Delete-Hintergrund**: roter Bereich (`bg-red-500`) mit Mülleimer-Icon + „Löschen"-Label
+- **Exit-Animation**: Eintrag slide-out nach links (transform), dann Height-Collapse (`max-h-0`, 280ms) für sanftes Zusammenfalten der Liste
+- **Swipe-Hint**: dezenter Chevron-Links-Icon am rechten Rand, verschwindet sobald der Eintrag geöffnet ist
+- Tap auf einen geöffneten Eintrag → schließt ihn wieder (snap zurück)
+- `deleteTraining(id)` aus `workoutStore` wird nach der Slide-out-Animation aufgerufen
+- Kein externes Touch-Handling-Package; keine Modals; funktioniert auf iOS Safari und Android Chrome

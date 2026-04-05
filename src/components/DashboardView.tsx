@@ -3,6 +3,7 @@ import { useWorkoutStore } from '@/store/workoutStore'
 import { recommendationService } from '@/services/recommendations'
 import { RecommendationItem, WorkoutStats } from '@/types'
 import AddPastTraining from '@/components/AddPastTraining'
+import SwipeableEntry from '@/components/SwipeableEntry'
 import ClearDataButton from '@/components/ClearDataButton'
 
 export default function DashboardView() {
@@ -91,19 +92,7 @@ export default function DashboardView() {
           {last10Days
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .map((training) => (
-              <div key={training.id} className="bg-app-inner rounded-xl p-4 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-app-primary rounded-full shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold text-app-text">
-                    {new Date(training.date).toLocaleDateString('de-DE', {
-                      weekday: 'short',
-                      day: 'numeric',
-                      month: 'short',
-                    })}
-                  </p>
-                  <p className="text-xs text-gray-500">{training.muscleGroups.join(', ')}</p>
-                </div>
-              </div>
+              <SwipeableEntry key={training.id} training={training} />
             ))}
         </div>
         <AddPastTraining />
