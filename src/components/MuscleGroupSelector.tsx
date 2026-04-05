@@ -82,7 +82,7 @@ export default function MuscleGroupSelector() {
                 isActive ? cfg.active + ' scale-[1.03]' : cfg.base + ' hover:brightness-110'
               }`}
             >
-              <Icon className="w-6 h-6" />
+              <Icon className="w-8 h-8" />
               <span className="text-xs font-semibold leading-none text-center w-full px-1 truncate">
                 {group}
               </span>
