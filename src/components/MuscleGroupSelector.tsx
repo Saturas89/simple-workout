@@ -1,50 +1,42 @@
 import { useState, useEffect } from 'react'
 import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { MUSCLE_ICONS } from '@/components/MuscleIcons'
 
-const MUSCLE_CONFIG: Record<MuscleGroup, { icon: string; base: string; active: string }> = {
+const MUSCLE_CONFIG: Record<MuscleGroup, { base: string; active: string }> = {
   Brust: {
-    icon: '🏋️',
     base: 'bg-red-500/10 border-red-500/40 text-red-600',
     active: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30',
   },
   Rücken: {
-    icon: '🚣',
     base: 'bg-blue-500/10 border-blue-500/40 text-blue-600',
     active: 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-500/30',
   },
   Schulter: {
-    icon: '🤸',
     base: 'bg-violet-500/10 border-violet-500/40 text-violet-600',
     active: 'bg-violet-500 border-violet-500 text-white shadow-lg shadow-violet-500/30',
   },
   Bizeps: {
-    icon: '💪',
     base: 'bg-orange-500/10 border-orange-500/40 text-orange-600',
     active: 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/30',
   },
   Trizeps: {
-    icon: '🦾',
     base: 'bg-pink-500/10 border-pink-500/40 text-pink-600',
     active: 'bg-pink-500 border-pink-500 text-white shadow-lg shadow-pink-500/30',
   },
   Beine: {
-    icon: '🦵',
     base: 'bg-green-500/10 border-green-500/40 text-green-600',
     active: 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30',
   },
   Mobility: {
-    icon: '🧘',
     base: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-600',
     active: 'bg-yellow-500 border-yellow-500 text-white shadow-lg shadow-yellow-500/30',
   },
   Ausdauer: {
-    icon: '🏃',
     base: 'bg-cyan-500/10 border-cyan-500/40 text-cyan-700',
     active: 'bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/30',
   },
   Eisbaden: {
-    icon: '🥶',
     base: 'bg-indigo-500/10 border-indigo-500/40 text-indigo-600',
     active: 'bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/30',
   },
@@ -81,6 +73,7 @@ export default function MuscleGroupSelector() {
         {MUSCLE_GROUPS.map((group) => {
           const isActive = selected.includes(group)
           const cfg = MUSCLE_CONFIG[group]
+          const Icon = MUSCLE_ICONS[group]
           return (
             <button
               key={group}
@@ -89,7 +82,7 @@ export default function MuscleGroupSelector() {
                 isActive ? cfg.active + ' scale-[1.03]' : cfg.base + ' hover:brightness-110'
               }`}
             >
-              <span className="text-xl leading-none">{cfg.icon}</span>
+              <Icon className="w-6 h-6" />
               <span className="text-xs font-semibold leading-none text-center w-full px-1 truncate">
                 {group}
               </span>
