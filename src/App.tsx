@@ -42,7 +42,8 @@ function App() {
   return (
     <div className="min-h-screen bg-app-bg text-app-text flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-app-card/80 backdrop-blur border-b border-app-border/5">
+      <header className="sticky top-0 z-50 bg-app-card/80 backdrop-blur border-b border-app-border/5"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-app-primary rounded-lg flex items-center justify-center text-sm font-black">
