@@ -34,7 +34,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
 - **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
 - **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
-- **Einzeleintrag löschen**: Swipe nach links öffnet roten Löschen-Button; weiter swipen (>180px) löscht direkt; sanfte Height-Collapse-Animation
+- **Einzeleintrag löschen**: Swipe nach links (>110px) löscht direkt — kein Button, das Swipen ist die Aktion; dezenter roter Tint + Mülleimer wächst während des Swipens; spring-Snap-Back wenn zu kurz
 
 ### 3. Analytics (Tab: Verlauf)
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe

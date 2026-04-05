@@ -73,12 +73,14 @@ interface TrainingEntry {
 
 ### `src/components/SwipeableEntry.tsx` (FR-2.9)
 - Jeder Eintrag in der Letzte-10-Tage-Liste ist swipebar (nach links)
-- **Swipe-Mechanismus**: native Touch-Events (`onTouchStart`, `onTouchMove`, `onTouchEnd`), kein externes Package
-- `SNAP_PX = 72`: Swipt man weiter als 72px links → Eintrag snappt auf, roter Löschen-Button erscheint rechts
-- `AUTO_DELETE_PX = 180`: Swipt man weiter als 180px → Eintrag wird direkt gelöscht (kein Tap auf Button nötig)
-- **Delete-Hintergrund**: roter Bereich (`bg-red-500`) mit Mülleimer-Icon + „Löschen"-Label
-- **Exit-Animation**: Eintrag slide-out nach links (transform), dann Height-Collapse (`max-h-0`, 280ms) für sanftes Zusammenfalten der Liste
-- **Swipe-Hint**: dezenter Chevron-Links-Icon am rechten Rand, verschwindet sobald der Eintrag geöffnet ist
-- Tap auf einen geöffneten Eintrag → schließt ihn wieder (snap zurück)
+- **Swipe-Mechanismus**: native Touch-Events, kein externes Package; Achse wird beim ersten Bewegungsschritt gelockt (kein Konflikt mit vertikalem Scroll)
+- `COMMIT_PX = 110`: Swipt man weiter als 110px und lässt los → Eintrag löscht sich selbst
+- **Kein Löschen-Button**: es gibt keinen roten Button; das Swipen selbst ist die Aktion
+- **Visuelles Feedback während des Swipens**:
+  - Hintergrund: dezenter roter Tint (`rgba(239,68,68, progress * 0.15)`) — kaum sichtbar, wächst mit dem Swipe
+  - Mülleimer-Icon: erscheint und skaliert proportional zum Swipe-Fortschritt (`progress 0→1`)
+  - Karte selbst: leichte Opacity-Abnahme (`opacity: 1 - progress * 0.25`)
+- **Snap-Back**: wird vor dem Threshold losgelassen → federt mit `cubic-bezier(0.34, 1.56, 0.64, 1)` (spring) zurück
+- **Commit**: nach dem Threshold → gleitet vollständig aus dem Bild, dann Height-Collapse (300ms) für sanftes Zusammenfalten
 - `deleteTraining(id)` aus `workoutStore` wird nach der Slide-out-Animation aufgerufen
-- Kein externes Touch-Handling-Package; keine Modals; funktioniert auf iOS Safari und Android Chrome
+- Funktioniert auf iOS Safari und Android Chrome
