@@ -3,15 +3,17 @@ import { persist } from 'zustand/middleware'
 import { Theme, UserProfile, THEMES } from '@/types/theme'
 
 interface ThemeStore {
-  // State
   theme: Theme
   profile: UserProfile
 
-  // Actions
   setTheme: (theme: Theme) => void
   updateProfile: (profile: Partial<UserProfile>) => void
   getThemeConfig: () => typeof THEMES[Theme]
   getCurrentColors: () => typeof THEMES.dark.colors
+}
+
+const applyTheme = (theme: Theme) => {
+  document.documentElement.setAttribute('data-theme', theme)
 }
 
 export const useThemeStore = create<ThemeStore>()(
@@ -23,6 +25,7 @@ export const useThemeStore = create<ThemeStore>()(
       },
 
       setTheme: (theme: Theme) => {
+        applyTheme(theme)
         set((state) => ({
           theme,
           profile: {
@@ -54,6 +57,9 @@ export const useThemeStore = create<ThemeStore>()(
     {
       name: 'theme-store',
       partialize: (state) => ({ theme: state.theme, profile: state.profile }),
+      onRehydrateStorage: () => (state) => {
+        if (state) applyTheme(state.theme)
+      },
     },
   ),
 )

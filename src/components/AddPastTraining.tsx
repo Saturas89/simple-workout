@@ -46,20 +46,20 @@ export default function AddPastTraining() {
     <div className="mt-3">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="text-xs text-gray-600 hover:text-gray-400 transition-colors flex items-center gap-1"
+        className="text-xs text-app-text-3 hover:text-app-text-2 transition-colors flex items-center gap-1"
       >
         <span>{open ? '−' : '+'}</span>
         <span>Vergangenen Tag nachtragen</span>
       </button>
 
       {open && (
-        <div className="mt-3 p-4 bg-gray-800/60 rounded-xl space-y-3 border border-white/5">
+        <div className="mt-3 p-4 bg-app-inner/60 rounded-xl space-y-3 border border-app-border/5">
           <input
             type="date"
             value={date}
             max={maxDate}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full bg-gray-800 text-white text-sm rounded-lg px-3 py-2 border border-white/10 outline-none focus:border-violet-500 transition-colors"
+            className="w-full bg-app-inner text-app-text text-sm rounded-lg px-3 py-2 border border-app-border/10 outline-none focus:border-app-primary transition-colors"
           />
 
           <div className="flex flex-wrap gap-1.5">
@@ -82,8 +82,8 @@ export default function AddPastTraining() {
               saved
                 ? 'bg-green-500 text-white'
                 : selected.length > 0 && date
-                  ? 'bg-violet-500 hover:bg-violet-400 text-white'
-                  : 'bg-white/5 text-gray-600 cursor-not-allowed'
+                  ? 'bg-app-primary hover:bg-app-primary/90 text-white'
+                  : 'bg-app-border/5 text-app-text-3 cursor-not-allowed'
             }`}
           >
             {saved ? 'Gespeichert ✓' : 'Speichern'}

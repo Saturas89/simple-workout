@@ -28,7 +28,7 @@ export default function ClearDataButton() {
         <div className="flex gap-2">
           <button
             onClick={handleCancel}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors"
+            className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-app-inner text-app-text-2 hover:bg-app-inner/80 transition-colors"
           >
             Abbrechen
           </button>
