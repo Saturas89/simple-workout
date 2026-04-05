@@ -6,6 +6,7 @@ import MuscleGroupSelector from '@/components/MuscleGroupSelector'
 import AnalyticsView from '@/components/AnalyticsView'
 import AuthView from '@/components/AuthView'
 import SettingsModal from '@/components/SettingsModal'
+import InstallPrompt from '@/components/InstallPrompt'
 import './App.css'
 
 type Tab = 'heute' | 'verlauf'
@@ -135,6 +136,7 @@ function App() {
       </nav>
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      <InstallPrompt />
     </div>
   )
 }

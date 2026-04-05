@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="110" fill="#7c3aed"/>
+  <!-- Dumbbell bar -->
+  <rect x="176" y="236" width="160" height="40" rx="8" fill="white" opacity="0.95"/>
+  <!-- Left weight outer -->
+  <rect x="108" y="188" width="48" height="136" rx="14" fill="white" opacity="0.95"/>
+  <!-- Left weight inner cap -->
+  <rect x="148" y="208" width="28" height="96" rx="8" fill="#7c3aed"/>
+  <!-- Right weight outer -->
+  <rect x="356" y="188" width="48" height="136" rx="14" fill="white" opacity="0.95"/>
+  <!-- Right weight inner cap -->
+  <rect x="336" y="208" width="28" height="96" rx="8" fill="#7c3aed"/>
+  <!-- Grip knurling lines -->
+  <rect x="176" y="248" width="160" height="4" rx="2" fill="#7c3aed" opacity="0.25"/>
+  <rect x="176" y="260" width="160" height="4" rx="2" fill="#7c3aed" opacity="0.25"/>
+</svg>
