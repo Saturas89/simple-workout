@@ -50,13 +50,22 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - Eingeloggt: Daten in Supabase (PostgreSQL, geräteübergreifend)
 - Nicht eingeloggt: Daten in IndexedDB (lokal)
 
-### 5. Einstellungen & Design-Themes
+### 5. Apple Health Integration (iOS)
+- Technisch nicht direkt aus einer PWA möglich (HealthKit ist native-only); Lösung: iOS Shortcuts-Brücke
+- **Einmalige Einrichtung**: Nutzer erstellt in der Shortcuts-App einen Shortcut namens „Simple Workout Log" mit der Aktion „Workout aufzeichnen" (Typ: Krafttraining); Schritt-für-Schritt-Anleitung in den Einstellungen (nur auf iOS sichtbar)
+- **Automatischer Trigger**: Nach jedem Speichern erscheint auf iOS 8 Sekunden lang ein roter „In Apple Health speichern" Button
+- Tippen öffnet `shortcuts://run-shortcut?name=Simple+Workout+Log&input=text&text=<Gruppen>` — übergibt die trainierten Muskelgruppen als kommaseparierten Text an den Shortcut
+- Der Shortcut fragt nach der Dauer und schreibt das Workout in Apple Health
+- Implementierung: `src/services/appleHealth.ts` — `isIOS()`, `triggerHealthShortcut()`, `SHORTCUT_SETUP_STEPS`
+
+### 6. Einstellungen & Design-Themes
 - Zahnrad-Icon oben rechts öffnet SettingsModal (Bottom Sheet auf Mobile)
 - **Power Mode** (Standard): dunkles Design mit Violett-Akzent
 - **Prinzessin Mode**: helles Rosa-Design mit Pink-Akzent
 - Theme-Wechsel sofort wirksam — ohne Reload — über CSS Custom Properties (`data-theme` auf `<html>`)
 - Theme und Profil-Name werden lokal in localStorage persistiert (Zustand persist)
 - Alle Trainings löschbar über Einstellungen / Dashboard (Sicherheitsabfrage)
+- Apple Health Einrichtungsanleitung (nur auf iOS sichtbar)
 
 ---
 
