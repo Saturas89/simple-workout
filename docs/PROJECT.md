@@ -36,11 +36,12 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
 - **Einzeleintrag löschen**: Swipe nach links (>110px) löscht direkt — kein Button, das Swipen ist die Aktion; dezenter roter Tint + Mülleimer wächst während des Swipens; spring-Snap-Back wenn zu kurz
 
-### 3. Analytics (Tab: Verlauf)
+### 3. Dashboard (Tab: Dashboard)
+- **Letzte 7 Tage – Wochenübersicht**: 7 Tageskarten nebeneinander (ältester Tag links, heute rechts); jede Karte zeigt die Muskelgruppen-Icons der an diesem Tag trainierten Gruppen; Ruhetage zeigen nur einen kleinen Punkt; heutiger Tag ist mit Primärfarbe hervorgehoben; aktive Tage zählen als Summary-Zeile ("X von 7 Tagen aktiv")
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
 - **Wöchentliche Aktivität**: Balkendiagramm — Trainingstage pro Woche, letzte 8 Wochen
 - **Muskelgruppen-Verteilung**: Horizontales Balkendiagramm — Häufigkeit jeder Gruppe (alle Zeit)
-- **Navigation**: Bottom Tab Bar (Heute / Verlauf)
+- **Navigation**: Bottom Tab Bar (Heute / Dashboard)
 - **Bibliothek**: recharts
 
 ### 4. Authentifizierung

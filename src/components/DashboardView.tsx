@@ -5,7 +5,6 @@ import { RecommendationItem, WorkoutStats } from '@/types'
 import AddPastTraining from '@/components/AddPastTraining'
 import SwipeableEntry from '@/components/SwipeableEntry'
 import ClearDataButton from '@/components/ClearDataButton'
-import WeeklyMuscleGrid from '@/components/WeeklyMuscleGrid'
 
 export default function DashboardView() {
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
@@ -62,13 +61,6 @@ export default function DashboardView() {
           </div>
         </div>
       )}
-
-      <div>
-        <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-3">
-          Letzte 7 Tage
-        </p>
-        <WeeklyMuscleGrid trainings={allTrainings} />
-      </div>
 
       {recommendations.length > 0 && (
         <div>

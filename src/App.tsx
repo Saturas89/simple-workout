@@ -7,14 +7,15 @@ import AnalyticsView from '@/components/AnalyticsView'
 import AuthView from '@/components/AuthView'
 import SettingsModal from '@/components/SettingsModal'
 import InstallPrompt from '@/components/InstallPrompt'
+import WeeklyActivitySummary from '@/components/WeeklyActivitySummary'
 import './App.css'
 
-type Tab = 'heute' | 'verlauf'
+type Tab = 'heute' | 'dashboard'
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('heute')
   const [showSettings, setShowSettings] = useState(false)
-  const { initialize: initWorkout } = useWorkoutStore()
+  const { initialize: initWorkout, allTrainings } = useWorkoutStore()
   const { user, isLoading: authLoading, initialize: initAuth } = useAuthStore()
 
   useEffect(() => {
@@ -102,13 +103,21 @@ function App() {
           </>
         )}
 
-        {activeTab === 'verlauf' && (
-          <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
-            <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-              Trainingsverlauf
-            </h2>
-            <AnalyticsView />
-          </section>
+        {activeTab === 'dashboard' && (
+          <div className="space-y-4">
+            <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
+              <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
+                Letzte 7 Tage
+              </h2>
+              <WeeklyActivitySummary trainings={allTrainings} />
+            </section>
+            <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
+              <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
+                Verlauf
+              </h2>
+              <AnalyticsView />
+            </section>
+          </div>
         )}
       </main>
 
@@ -125,13 +134,13 @@ function App() {
             Heute
           </button>
           <button
-            onClick={() => setActiveTab('verlauf')}
+            onClick={() => setActiveTab('dashboard')}
             className={`py-3 flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-              activeTab === 'verlauf' ? 'text-app-primary' : 'text-app-text-3 hover:text-app-text-2'
+              activeTab === 'dashboard' ? 'text-app-primary' : 'text-app-text-3 hover:text-app-text-2'
             }`}
           >
             <span className="text-lg leading-none">📊</span>
-            Verlauf
+            Dashboard
           </button>
         </div>
       </nav>
