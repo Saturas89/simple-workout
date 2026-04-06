@@ -1,17 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background rounded square -->
-  <rect width="512" height="512" rx="110" fill="#7c3aed"/>
-  <!-- Dumbbell bar -->
-  <rect x="176" y="236" width="160" height="40" rx="8" fill="white" opacity="0.95"/>
-  <!-- Left weight outer -->
-  <rect x="108" y="188" width="48" height="136" rx="14" fill="white" opacity="0.95"/>
-  <!-- Left weight inner cap -->
-  <rect x="148" y="208" width="28" height="96" rx="8" fill="#7c3aed"/>
-  <!-- Right weight outer -->
-  <rect x="356" y="188" width="48" height="136" rx="14" fill="white" opacity="0.95"/>
-  <!-- Right weight inner cap -->
-  <rect x="336" y="208" width="28" height="96" rx="8" fill="#7c3aed"/>
-  <!-- Grip knurling lines -->
-  <rect x="176" y="248" width="160" height="4" rx="2" fill="#7c3aed" opacity="0.25"/>
-  <rect x="176" y="260" width="160" height="4" rx="2" fill="#7c3aed" opacity="0.25"/>
+  <defs>
+    <!-- Deep violet gradient background -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e0a4a"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <!-- Inner glow on dumbbell -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Subtle inner shadow on background -->
+    <radialGradient id="shine" cx="35%" cy="28%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- Glass shine overlay -->
+  <rect width="512" height="512" rx="112" fill="url(#shine)"/>
+
+  <!-- Dumbbell — centred, larger, more solid -->
+  <g filter="url(#glow)">
+    <!-- Left plate outer -->
+    <rect x="72" y="184" width="68" height="144" rx="18" fill="white" opacity="0.97"/>
+    <!-- Left plate inner groove -->
+    <rect x="116" y="204" width="24" height="104" rx="10" fill="#4c1d95" opacity="0.6"/>
+    <!-- Left collar -->
+    <rect x="140" y="218" width="32" height="76" rx="8" fill="white" opacity="0.97"/>
+
+    <!-- Bar -->
+    <rect x="164" y="238" width="184" height="36" rx="18" fill="white" opacity="0.97"/>
+    <!-- Knurl texture -->
+    <rect x="200" y="248" width="112" height="5" rx="2.5" fill="#7c3aed" opacity="0.3"/>
+    <rect x="200" y="259" width="112" height="5" rx="2.5" fill="#7c3aed" opacity="0.3"/>
+
+    <!-- Right collar -->
+    <rect x="340" y="218" width="32" height="76" rx="8" fill="white" opacity="0.97"/>
+    <!-- Right plate outer -->
+    <rect x="372" y="184" width="68" height="144" rx="18" fill="white" opacity="0.97"/>
+    <!-- Right plate inner groove -->
+    <rect x="372" y="204" width="24" height="104" rx="10" fill="#4c1d95" opacity="0.6"/>
+  </g>
+
+  <!-- Subtle spark / lightning above — gives energy feel -->
+  <g opacity="0.7">
+    <polygon points="272,88 258,138 268,138 252,182 284,124 272,124" fill="white" opacity="0.9"/>
+  </g>
 </svg>
