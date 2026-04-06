@@ -1,14 +1,16 @@
 // Custom SVG muscle group icons — anatomical illustration style
 // Each icon uses filled shapes + outlined strokes for depth and clarity
+import React from 'react'
 
 interface IconProps {
   className?: string
+  style?: React.CSSProperties
 }
 
 /** Brust — front torso, two pectoral muscles */
-export function IconBrust({ className }: IconProps) {
+export function IconBrust({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Full chest area – soft background fill */}
       <path
         d="M4 9.5C4 6.5 6.5 4.5 9.5 5.5C11 6 11.8 7.5 12 9C12.2 7.5 13 6 14.5 5.5C17.5 4.5 20 6.5 20 9.5C20 14 16.5 18.5 12 20C7.5 18.5 4 14 4 9.5Z"
@@ -45,9 +47,9 @@ export function IconBrust({ className }: IconProps) {
 }
 
 /** Rücken — back muscles, V-taper view from behind */
-export function IconRücken({ className }: IconProps) {
+export function IconRücken({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Full back fill */}
       <path
         d="M5 7C5 5.5 8 4 12 4C16 4 19 5.5 19 7C19 9 17.5 11 16 13L13.5 20H10.5L8 13C6.5 11 5 9 5 7Z"
@@ -85,9 +87,9 @@ export function IconRücken({ className }: IconProps) {
 }
 
 /** Schulter — deltoid muscle, three heads visible */
-export function IconSchulter({ className }: IconProps) {
+export function IconSchulter({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Posterior delt (back) */}
       <path
         d="M16.5 5.5C18.5 6 20 7.5 20 9.5C20 11.5 18.5 13 17 14L14 15.5L14.5 12Z"
@@ -118,9 +120,9 @@ export function IconSchulter({ className }: IconProps) {
 }
 
 /** Bizeps — flexed arm, bicep peak clearly defined */
-export function IconBizeps({ className }: IconProps) {
+export function IconBizeps({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Upper arm base fill */}
       <path
         d="M6.5 7C6.5 5 8.5 3.5 10.5 4C12 4.5 13 6 13 7.5C13 9 12 10.5 11 11L11.5 14H8.5L8 11C7 10 6.5 8.5 6.5 7Z"
@@ -159,9 +161,9 @@ export function IconBizeps({ className }: IconProps) {
 }
 
 /** Trizeps — back of arm, horseshoe tricep shape */
-export function IconTrizeps({ className }: IconProps) {
+export function IconTrizeps({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Shoulder area */}
       <path d="M7 4.5Q12 3 17 4.5"
         stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -195,9 +197,9 @@ export function IconTrizeps({ className }: IconProps) {
 }
 
 /** Beine — front view of quads, thigh musculature */
-export function IconBeine({ className }: IconProps) {
+export function IconBeine({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Hip / pelvis bar */}
       <path d="M5 5Q12 3.5 19 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       {/* Left quad body */}
@@ -231,9 +233,9 @@ export function IconBeine({ className }: IconProps) {
 }
 
 /** Mobility — warrior yoga pose, side stretch */
-export function IconMobility({ className }: IconProps) {
+export function IconMobility({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Head */}
       <circle cx="12" cy="3.5" r="1.8" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="1.2" />
       {/* Torso – bent forward */}
@@ -272,9 +274,9 @@ export function IconMobility({ className }: IconProps) {
 }
 
 /** Ausdauer — dynamic running figure */
-export function IconAusdauer({ className }: IconProps) {
+export function IconAusdauer({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Head */}
       <circle cx="15.5" cy="3.5" r="1.8" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="1.2" />
       {/* Torso – leaning forward */}
@@ -322,9 +324,9 @@ export function IconAusdauer({ className }: IconProps) {
 }
 
 /** Eisbaden — elaborate snowflake / ice crystal */
-export function IconEisbaden({ className }: IconProps) {
+export function IconEisbaden({ className, style }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       {/* Main vertical arm */}
       <line x1="12" y1="2.5" x2="12" y2="21.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       {/* Main horizontal arm */}
