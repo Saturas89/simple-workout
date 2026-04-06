@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { isIOS, triggerHealthShortcut } from '@/services/appleHealth'
 
 const MUSCLE_CONFIG: Record<MuscleGroup, { base: string; active: string; emoji: string }> = {
   Brust:    { emoji: '🫁', base: 'bg-red-500/10 border-red-500/40 text-red-600',       active: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30' },
@@ -17,7 +18,9 @@ const MUSCLE_CONFIG: Record<MuscleGroup, { base: string; active: string; emoji: 
 export default function MuscleGroupSelector() {
   const [selected, setSelected] = useState<MuscleGroup[]>([])
   const [saved, setSaved] = useState(false)
+  const [lastSaved, setLastSaved] = useState<MuscleGroup[]>([])
   const { saveTodaySelection, todaySelection } = useWorkoutStore()
+  const showHealthButton = saved && isIOS() && lastSaved.length > 0
 
   useEffect(() => {
     if (todaySelection) {
@@ -36,7 +39,8 @@ export default function MuscleGroupSelector() {
     if (selected.length === 0) return
     await saveTodaySelection(selected)
     setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    setLastSaved(selected)
+    setTimeout(() => setSaved(false), 8000)
   }
 
   return (
@@ -79,6 +83,17 @@ export default function MuscleGroupSelector() {
             ? `${selected.length} Gruppe${selected.length > 1 ? 'n' : ''} speichern`
             : 'Muskelgruppen auswählen'}
       </button>
+
+      {showHealthButton && (
+        <button
+          onClick={() => triggerHealthShortcut(lastSaved)}
+          className="w-full py-3.5 rounded-2xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
+          style={{ background: 'rgba(255,59,48,0.12)', color: '#ff3b30', border: '1px solid rgba(255,59,48,0.25)' }}
+        >
+          <span>❤️</span>
+          <span>In Apple Health speichern</span>
+        </button>
+      )}
     </div>
   )
 }

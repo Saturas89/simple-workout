@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useThemeStore } from '@/store/themeStore'
 import { useAuthStore } from '@/store/authStore'
 import { THEMES, Theme } from '@/types/theme'
+import { isIOS, SHORTCUT_SETUP_STEPS, SHORTCUT_NAME } from '@/services/appleHealth'
 
 interface SettingsModalProps {
   onClose: () => void
@@ -104,8 +105,34 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             </div>
           </section>
 
+          {/* Apple Health */}
+          {isIOS() && (
+            <section className="border-t border-app-border/5 pt-6">
+              <h3 className="text-lg font-bold text-app-text mb-1">❤️ Apple Health</h3>
+              <p className="text-xs text-app-text-3 mb-4">
+                Einmalig einen Shortcut anlegen — danach erscheint nach jedem Speichern ein Health-Button.
+              </p>
+              <ol className="space-y-2">
+                {SHORTCUT_SETUP_STEPS.map((step, i) => (
+                  <li key={i} className="flex gap-3 text-sm text-app-text-2">
+                    <span
+                      className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                      style={{ background: 'rgba(255,59,48,0.15)', color: '#ff3b30' }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="leading-snug">{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-4 text-[11px] text-app-text-3">
+                Shortcut-Name muss exakt „{SHORTCUT_NAME}" lauten.
+              </p>
+            </section>
+          )}
+
           {/* Storage Info */}
-          <section className="border-t border-white/5 pt-6">
+          <section className="border-t border-app-border/5 pt-6">
             <h3 className="text-sm font-medium text-app-text-3">
               ℹ️ Deine Einstellungen werden automatisch lokal gespeichert.
             </h3>
