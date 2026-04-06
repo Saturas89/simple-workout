@@ -1,17 +1,16 @@
 import { useMemo } from 'react'
 import { MuscleGroup, TrainingEntry } from '@/types'
-import { MUSCLE_ICONS } from '@/components/MuscleIcons'
 
-const MUSCLE_COLORS: Record<MuscleGroup, string> = {
-  Brust:    '#ef4444',
-  Rücken:   '#3b82f6',
-  Schulter: '#8b5cf6',
-  Bizeps:   '#f97316',
-  Trizeps:  '#ec4899',
-  Beine:    '#22c55e',
-  Mobility: '#eab308',
-  Ausdauer: '#06b6d4',
-  Eisbaden: '#6366f1',
+const MUSCLE_EMOJIS: Record<MuscleGroup, string> = {
+  Brust:    '🫁',
+  Rücken:   '🔙',
+  Schulter: '🏋️',
+  Bizeps:   '💪',
+  Trizeps:  '🦾',
+  Beine:    '🦵',
+  Mobility: '🧘',
+  Ausdauer: '🏃',
+  Eisbaden: '🧊',
 }
 
 const DE_DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
@@ -105,16 +104,9 @@ export default function WeeklyActivitySummary({ trainings }: Props) {
               {/* Muscle icons or rest dot */}
               <div className="flex flex-col items-center gap-1 mt-0.5 min-h-[20px] justify-center">
                 {hasActivity ? (
-                  groups.map((g) => {
-                    const Icon = MUSCLE_ICONS[g]
-                    return (
-                      <Icon
-                        key={g}
-                        className="w-3.5 h-3.5"
-                        style={{ color: MUSCLE_COLORS[g] }}
-                      />
-                    )
-                  })
+                  groups.map((g) => (
+                    <span key={g} className="text-[11px] leading-none">{MUSCLE_EMOJIS[g]}</span>
+                  ))
                 ) : (
                   <div
                     className="w-1.5 h-1.5 rounded-full"
