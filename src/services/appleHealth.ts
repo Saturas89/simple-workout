@@ -1,35 +1,46 @@
 /**
  * Apple Health bridge via iOS Shortcuts URL scheme.
  *
- * Flow:
- *  1. User installs the "Simple Workout Log" shortcut once (guided in Settings).
- *  2. After every save, the app opens:
+ * Two-step flow:
+ *  1. SETUP (once): User opens Shortcuts app, creates "Simple Workout Log".
+ *     App stores `apple-health-ready=true` in localStorage after user confirms.
+ *  2. RUN: After every save, app opens
  *     shortcuts://run-shortcut?name=Simple+Workout+Log&input=text&text=<groups>
- *  3. The Shortcut receives the muscle group list, asks for duration,
- *     and writes a Strength Training workout to Apple Health.
  *
- * Only available on iOS (Safari + standalone PWA).
+ * Only available on iOS.
  */
 
 export const isIOS = (): boolean =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
 
 export const SHORTCUT_NAME = 'Simple Workout Log'
+const STORAGE_KEY = 'apple-health-ready'
 
-/** Opens the Shortcut with the trained muscle groups as input text. */
+export const isHealthReady = (): boolean =>
+  localStorage.getItem(STORAGE_KEY) === 'true'
+
+export const markHealthReady = (): void =>
+  localStorage.setItem(STORAGE_KEY, 'true')
+
+/** Opens the Shortcuts app (so user can create the shortcut). */
+export function openShortcutsApp(): void {
+  window.location.href = 'shortcuts://'
+}
+
+/** Runs the shortcut with trained muscle groups as text input. */
 export function triggerHealthShortcut(muscleGroups: string[]): void {
   const input = encodeURIComponent(muscleGroups.join(', '))
   const name = encodeURIComponent(SHORTCUT_NAME)
   window.location.href = `shortcuts://run-shortcut?name=${name}&input=text&text=${input}`
 }
 
-/** Steps the user needs to follow once to create the Shortcut. */
+/** Steps the user needs to follow once to create the shortcut. */
 export const SHORTCUT_SETUP_STEPS = [
-  'Öffne die Shortcuts-App auf deinem iPhone.',
-  'Tippe oben rechts auf „+" um einen neuen Shortcut zu erstellen.',
-  `Benenne den Shortcut: „${SHORTCUT_NAME}"`,
+  'Tippe auf „Shortcuts-App öffnen" unten.',
+  'Tippe oben rechts auf „+" → neuen Shortcut erstellen.',
+  `Benenne ihn exakt: „${SHORTCUT_NAME}"`,
   'Füge die Aktion „Workout aufzeichnen" hinzu (Suche: „Workout").',
-  'Typ: Krafttraining — Dauer: „Shortcut-Eingabe fragen" — Kalorien leer lassen.',
-  'Tippe oben rechts auf das Teilen-Symbol → „Zum Startbildschirm" oder einfach speichern.',
-  'Fertig! Ab jetzt erscheint nach jedem Speichern in Simple Workout ein Health-Button.',
+  'Typ: Krafttraining — Dauer: „Shortcut-Eingabe fragen" — Kalorien leer.',
+  'Oben rechts auf „Fertig" tippen → Shortcut ist gespeichert.',
+  'Zurück zu Simple Workout kommen und „Einrichtung abgeschlossen" tippen.',
 ]
