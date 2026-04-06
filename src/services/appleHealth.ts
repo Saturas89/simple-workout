@@ -1,11 +1,9 @@
 /**
- * Apple Health bridge via iOS Shortcuts URL scheme.
+ * Apple Health bridge via iOS Shortcuts Automation.
  *
- * Two-step flow:
- *  1. SETUP (once): User opens Shortcuts app, creates "Simple Workout Log".
- *     App stores `apple-health-ready=true` in localStorage after user confirms.
- *  2. RUN: After every save, app opens
- *     shortcuts://run-shortcut?name=Simple+Workout+Log&input=text&text=<groups>
+ * Since PWAs cannot access HealthKit directly, we guide the user to create
+ * a time-based Shortcuts Automation that runs once per day automatically —
+ * no button press required.
  *
  * Only available on iOS.
  */
@@ -13,34 +11,38 @@
 export const isIOS = (): boolean =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
 
-export const SHORTCUT_NAME = 'Simple Workout Log'
-const STORAGE_KEY = 'apple-health-ready'
+const STORAGE_KEY = 'apple-health-automation-done'
 
-export const isHealthReady = (): boolean =>
+export const isAutomationSetup = (): boolean =>
   localStorage.getItem(STORAGE_KEY) === 'true'
 
-export const markHealthReady = (): void =>
+export const markAutomationSetup = (): void =>
   localStorage.setItem(STORAGE_KEY, 'true')
 
-/** Opens the Shortcuts app (so user can create the shortcut). */
+export const resetAutomationSetup = (): void =>
+  localStorage.removeItem(STORAGE_KEY)
+
+/** Opens the Shortcuts app on the Automation tab (best-effort deep link). */
+export function openShortcutsAutomation(): void {
+  window.location.href = 'shortcuts://open-automation'
+}
+
+/** Fallback: just open Shortcuts app. */
 export function openShortcutsApp(): void {
   window.location.href = 'shortcuts://'
 }
 
-/** Runs the shortcut with trained muscle groups as text input. */
-export function triggerHealthShortcut(muscleGroups: string[]): void {
-  const input = encodeURIComponent(muscleGroups.join(', '))
-  const name = encodeURIComponent(SHORTCUT_NAME)
-  window.location.href = `shortcuts://run-shortcut?name=${name}&input=text&text=${input}`
-}
-
-/** Steps the user needs to follow once to create the shortcut. */
-export const SHORTCUT_SETUP_STEPS = [
-  'Tippe auf „Shortcuts-App öffnen" unten.',
-  'Tippe oben rechts auf „+" → neuen Shortcut erstellen.',
-  `Benenne ihn exakt: „${SHORTCUT_NAME}"`,
-  'Füge die Aktion „Workout aufzeichnen" hinzu (Suche: „Workout").',
-  'Typ: Krafttraining — Dauer: „Shortcut-Eingabe fragen" — Kalorien leer.',
-  'Oben rechts auf „Fertig" tippen → Shortcut ist gespeichert.',
-  'Zurück zu Simple Workout kommen und „Einrichtung abgeschlossen" tippen.',
+/**
+ * Step-by-step guide to create a daily Shortcuts Automation.
+ * Runs every day at a chosen time, writes a Strength Training workout to Health.
+ * "Vor Ausführung fragen" must be disabled for fully automatic execution.
+ */
+export const AUTOMATION_SETUP_STEPS = [
+  'Öffne die Shortcuts-App und tippe unten auf „Automation".',
+  'Tippe oben rechts auf „+" → „Neue persönliche Automation".',
+  '„Tageszeit" wählen → Uhrzeit festlegen (z. B. 21:00) → „Weiter".',
+  '„Aktion hinzufügen" tippen → Suche „Workout" → „Workout aufzeichnen" wählen.',
+  'Trainingstyp: Krafttraining — Dauer: gewünschte Zeit eintragen (z. B. 45 Min.).',
+  '„Weiter" tippen → den Schalter „Vor Ausführung fragen" AUSSCHALTEN.',
+  '„Fertig" tippen — ab jetzt läuft die Automation täglich automatisch.',
 ]

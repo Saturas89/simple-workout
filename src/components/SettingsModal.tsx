@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react'
 import { useThemeStore } from '@/store/themeStore'
 import { useAuthStore } from '@/store/authStore'
 import { THEMES, Theme } from '@/types/theme'
-import { isIOS, SHORTCUT_SETUP_STEPS, SHORTCUT_NAME } from '@/services/appleHealth'
+import {
+  isIOS,
+  isAutomationSetup,
+  markAutomationSetup,
+  resetAutomationSetup,
+  openShortcutsApp,
+  AUTOMATION_SETUP_STEPS,
+} from '@/services/appleHealth'
 
 interface SettingsModalProps {
   onClose: () => void
@@ -12,6 +19,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
   const { theme, profile, setTheme, updateProfile } = useThemeStore()
   const { user, signOut } = useAuthStore()
   const [name, setName] = useState(profile.name || user?.email?.split('@')[0] || '')
+  const [automationDone, setAutomationDone] = useState(isAutomationSetup())
 
   useEffect(() => {
     setName(profile.name || user?.email?.split('@')[0] || '')
@@ -108,26 +116,62 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
           {/* Apple Health */}
           {isIOS() && (
             <section className="border-t border-app-border/5 pt-6">
-              <h3 className="text-lg font-bold text-app-text mb-1">❤️ Apple Health</h3>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-lg font-bold text-app-text">❤️ Apple Health</h3>
+                {automationDone && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: 'rgba(52,199,89,0.15)', color: '#34c759' }}>
+                    ✓ Aktiv
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-app-text-3 mb-4">
-                Einmalig einen Shortcut anlegen — danach erscheint nach jedem Speichern ein Health-Button.
+                {automationDone
+                  ? 'Die tägliche Automation läuft. Training wird automatisch in Apple Health gespeichert.'
+                  : 'Richte einmalig eine tägliche Automation in der Shortcuts-App ein — danach läuft alles automatisch, kein Button nötig.'}
               </p>
-              <ol className="space-y-2">
-                {SHORTCUT_SETUP_STEPS.map((step, i) => (
-                  <li key={i} className="flex gap-3 text-sm text-app-text-2">
-                    <span
-                      className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                      style={{ background: 'rgba(255,59,48,0.15)', color: '#ff3b30' }}
+
+              {!automationDone && (
+                <>
+                  <ol className="space-y-2 mb-4">
+                    {AUTOMATION_SETUP_STEPS.map((step, i) => (
+                      <li key={i} className="flex gap-3 text-sm text-app-text-2">
+                        <span
+                          className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                          style={{ background: 'rgba(255,59,48,0.15)', color: '#ff3b30' }}
+                        >
+                          {i + 1}
+                        </span>
+                        <span className="leading-snug">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={openShortcutsApp}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-bold"
+                      style={{ background: 'rgba(255,59,48,0.12)', color: '#ff3b30', border: '1px solid rgba(255,59,48,0.25)' }}
                     >
-                      {i + 1}
-                    </span>
-                    <span className="leading-snug">{step}</span>
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-4 text-[11px] text-app-text-3">
-                Shortcut-Name muss exakt „{SHORTCUT_NAME}" lauten.
-              </p>
+                      Shortcuts öffnen
+                    </button>
+                    <button
+                      onClick={() => { markAutomationSetup(); setAutomationDone(true) }}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-app-inner text-app-text-2"
+                    >
+                      Eingerichtet ✓
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {automationDone && (
+                <button
+                  onClick={() => { resetAutomationSetup(); setAutomationDone(false) }}
+                  className="text-xs text-app-text-3 underline underline-offset-2"
+                >
+                  Automation zurücksetzen
+                </button>
+              )}
             </section>
           )}
 
