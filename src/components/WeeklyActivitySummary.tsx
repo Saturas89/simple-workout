@@ -21,15 +21,23 @@ interface Props {
 
 export default function WeeklyActivitySummary({ trainings }: Props) {
   const { days, groupsByDay, todayStr } = useMemo(() => {
+    // Use local date string to avoid UTC offset shifting the date
+    const toLocalStr = (d: Date) => {
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}-${m}-${day}`
+    }
+
     const now = new Date()
     now.setHours(0, 0, 0, 0)
-    const todayStr = now.toISOString().split('T')[0]
+    const todayStr = toLocalStr(now)
 
     // last 7 days, oldest first
     const days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(now)
       d.setDate(d.getDate() - (6 - i))
-      return { str: d.toISOString().split('T')[0], date: d }
+      return { str: toLocalStr(d), date: d }
     })
 
     const groupsByDay: Record<string, MuscleGroup[]> = {}
