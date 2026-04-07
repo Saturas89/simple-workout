@@ -47,9 +47,11 @@ function App() {
         style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-app-primary rounded-lg flex items-center justify-center text-sm font-black">
-              SW
-            </div>
+            <img
+              src="/icon.svg"
+              alt="Simple Workout"
+              className="w-9 h-9 rounded-xl"
+            />
             <div>
               <h1 className="text-base font-bold leading-tight text-app-text">Simple Workout</h1>
               <p className="text-app-text-2 text-xs">{user.email}</p>
