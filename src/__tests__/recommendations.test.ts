@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { recommendationService } from '@/services/recommendations'
 import { TrainingEntry, MUSCLE_GROUPS, WEEKLY_GOALS } from '@/types'
 
