@@ -21,6 +21,9 @@ const MUSCLE_COLORS: Record<MuscleGroup, string> = {
   Mobility: '#eab308',
   Ausdauer: '#06b6d4',
   Eisbaden: '#6366f1',
+  Sauna: '#f59e0b',
+  Bauch: '#10b981',
+  Sex: '#f43f5e',
 }
 
 function getISOWeek(date: Date): number {

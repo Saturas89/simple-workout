@@ -8,6 +8,9 @@ export type MuscleGroup =
   | 'Mobility'
   | 'Ausdauer'
   | 'Eisbaden'
+  | 'Sauna'
+  | 'Bauch'
+  | 'Sex'
 
 export const MUSCLE_GROUPS: MuscleGroup[] = [
   'Brust',
@@ -19,6 +22,9 @@ export const MUSCLE_GROUPS: MuscleGroup[] = [
   'Mobility',
   'Ausdauer',
   'Eisbaden',
+  'Sauna',
+  'Bauch',
+  'Sex',
 ]
 
 /** Legacy: used for analytics/stats (per 10 days) */
@@ -32,6 +38,9 @@ export const IDEAL_FREQUENCIES: Record<MuscleGroup, number> = {
   Mobility: 3,
   Ausdauer: 2,
   Eisbaden: 3,
+  Sauna: 2,
+  Bauch: 3,
+  Sex: 3,
 }
 
 /** Weekly training goals — used by the recommendation engine */
@@ -42,21 +51,24 @@ export const WEEKLY_GOALS: Record<MuscleGroup, number> = {
   Bizeps: 1,
   Trizeps: 1,
   Beine: 2,
-  Mobility: 3,  // 3× per week
+  Mobility: 3,
   Ausdauer: 2,
-  Eisbaden: 3,  // 3× per week
+  Eisbaden: 3,
+  Sauna: 2,
+  Bauch: 3,
+  Sex: 3,
 }
 
 export interface TrainingEntry {
   id: string
-  date: string // ISO date string
+  date: string        // ISO date string YYYY-MM-DD
   muscleGroups: MuscleGroup[]
-  createdAt: string // ISO datetime
+  createdAt: string   // ISO datetime — used to show time for multiple entries/day
   notes?: string
 }
 
 export interface DailySelection {
-  date: string // ISO date string
+  date: string
   muscleGroups: MuscleGroup[]
 }
 
@@ -66,9 +78,7 @@ export interface RecommendationItem {
   score: number
   /** Days since last training of this group. -1 = never trained. */
   daysSinceLast: number
-  /** Weekly goal for this group */
   weeklyGoal: number
-  /** How many times trained in the current Mon–Sun week */
   trainedThisWeek: number
   reason: string
 }

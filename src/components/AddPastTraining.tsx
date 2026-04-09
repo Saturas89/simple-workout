@@ -3,15 +3,18 @@ import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
 
 const MUSCLE_COLORS: Record<MuscleGroup, string> = {
-  Brust: 'bg-red-500/20 text-red-300 data-[active=true]:bg-red-500 data-[active=true]:text-white',
-  Rücken: 'bg-blue-500/20 text-blue-300 data-[active=true]:bg-blue-500 data-[active=true]:text-white',
+  Brust:    'bg-red-500/20 text-red-300 data-[active=true]:bg-red-500 data-[active=true]:text-white',
+  Rücken:   'bg-blue-500/20 text-blue-300 data-[active=true]:bg-blue-500 data-[active=true]:text-white',
   Schulter: 'bg-violet-500/20 text-violet-300 data-[active=true]:bg-violet-500 data-[active=true]:text-white',
-  Bizeps: 'bg-orange-500/20 text-orange-300 data-[active=true]:bg-orange-500 data-[active=true]:text-white',
-  Trizeps: 'bg-pink-500/20 text-pink-300 data-[active=true]:bg-pink-500 data-[active=true]:text-white',
-  Beine: 'bg-green-500/20 text-green-300 data-[active=true]:bg-green-500 data-[active=true]:text-white',
+  Bizeps:   'bg-orange-500/20 text-orange-300 data-[active=true]:bg-orange-500 data-[active=true]:text-white',
+  Trizeps:  'bg-pink-500/20 text-pink-300 data-[active=true]:bg-pink-500 data-[active=true]:text-white',
+  Beine:    'bg-green-500/20 text-green-300 data-[active=true]:bg-green-500 data-[active=true]:text-white',
   Mobility: 'bg-yellow-500/20 text-yellow-300 data-[active=true]:bg-yellow-500 data-[active=true]:text-white',
   Ausdauer: 'bg-cyan-500/20 text-cyan-300 data-[active=true]:bg-cyan-500 data-[active=true]:text-white',
   Eisbaden: 'bg-indigo-500/20 text-indigo-300 data-[active=true]:bg-indigo-500 data-[active=true]:text-white',
+  Sauna:    'bg-amber-500/20 text-amber-300 data-[active=true]:bg-amber-500 data-[active=true]:text-white',
+  Bauch:    'bg-emerald-500/20 text-emerald-300 data-[active=true]:bg-emerald-500 data-[active=true]:text-white',
+  Sex:      'bg-rose-500/20 text-rose-300 data-[active=true]:bg-rose-500 data-[active=true]:text-white',
 }
 
 const yesterday = new Date()

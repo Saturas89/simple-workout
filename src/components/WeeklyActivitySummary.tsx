@@ -11,6 +11,9 @@ const MUSCLE_EMOJIS: Record<MuscleGroup, string> = {
   Mobility: '🧘',
   Ausdauer: '🏃',
   Eisbaden: '🧊',
+  Sauna:    '🧖',
+  Bauch:    '🤸',
+  Sex:      '💋',
 }
 
 const DE_DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']

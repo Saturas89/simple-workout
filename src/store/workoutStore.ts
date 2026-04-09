@@ -7,6 +7,7 @@ import { supabase } from '@/services/supabase'
 interface WorkoutStore {
   allTrainings: TrainingEntry[]
   todaySelection: DailySelection | null
+  todayTrainings: TrainingEntry[]   // all entries saved today (multiple allowed)
   isLoading: boolean
 
   initialize: () => Promise<void>
@@ -24,9 +25,15 @@ const getStorage = async () => {
   return user ? cloudStorageService : storageService
 }
 
+function localToday(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export const useWorkoutStore = create<WorkoutStore>((set) => ({
   allTrainings: [],
   todaySelection: null,
+  todayTrainings: [],
   isLoading: false,
 
   initialize: async () => {
@@ -34,13 +41,15 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
     try {
       const storage = await getStorage()
       const trainings = await storage.getAllTrainings()
-      const today = new Date().toISOString().split('T')[0]
-      const todayTraining = trainings.filter((t) => t.date === today).slice(-1)[0]
+      const today = localToday()
+      const todayEntries = trainings.filter((t) => t.date === today)
+      const last = todayEntries.slice(-1)[0]
 
       set({
         allTrainings: trainings,
-        todaySelection: todayTraining
-          ? { date: todayTraining.date, muscleGroups: todayTraining.muscleGroups }
+        todayTrainings: todayEntries,
+        todaySelection: last
+          ? { date: last.date, muscleGroups: last.muscleGroups }
           : null,
         isLoading: false,
       })
@@ -51,7 +60,7 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
   },
 
   saveTodaySelection: async (muscleGroups: MuscleGroup[]) => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = localToday()
     const training: TrainingEntry = {
       id: `${Date.now()}`,
       date: today,
@@ -64,6 +73,7 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
 
     set((state) => ({
       allTrainings: [...state.allTrainings, training],
+      todayTrainings: [...state.todayTrainings, training],
       todaySelection: { date: today, muscleGroups },
     }))
   },
@@ -105,6 +115,6 @@ export const useWorkoutStore = create<WorkoutStore>((set) => ({
     const storage = await getStorage()
     await storage.clearAllTrainings()
 
-    set({ allTrainings: [], todaySelection: null })
+    set({ allTrainings: [], todayTrainings: [], todaySelection: null })
   },
 }))

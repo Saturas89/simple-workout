@@ -109,13 +109,23 @@ export default function SwipeableEntry({ training }: Props) {
       >
         <div className="w-1.5 h-8 bg-app-primary rounded-full shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-app-text">
-            {new Date(training.date).toLocaleDateString('de-DE', {
-              weekday: 'short',
-              day: 'numeric',
-              month: 'short',
-            })}
-          </p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-sm font-semibold text-app-text">
+              {(() => {
+                const [y, m, d] = training.date.split('-').map(Number)
+                return new Date(y, m - 1, d).toLocaleDateString('de-DE', {
+                  weekday: 'short', day: 'numeric', month: 'short',
+                })
+              })()}
+            </p>
+            {training.createdAt && (
+              <span className="text-[11px] text-app-text-3">
+                {new Date(training.createdAt).toLocaleTimeString('de-DE', {
+                  hour: '2-digit', minute: '2-digit',
+                })}
+              </span>
+            )}
+          </div>
           <p className="text-xs text-app-text-3 truncate">{training.muscleGroups.join(', ')}</p>
         </div>
       </div>

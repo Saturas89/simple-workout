@@ -20,17 +20,19 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 ## Kernfunktionen
 
 ### 1. Tägliche Muskelgruppen-Auswahl
-- 9 Muskelgruppen zur Auswahl (Mehrfachauswahl)
+- 12 Trainingsoptionen (Mehrfachauswahl): Brust, Rücken, Schulter, Bizeps, Trizeps, Beine, Mobility, Ausdauer, Eisbaden, Sauna, Bauch, Sex
 - Aktive Buttons erscheinen farbig ausgefüllt, inaktive als transparenter Tint
 - Speichern-Button: violett wenn Auswahl vorhanden, deaktiviert wenn leer
-- Nach dem Speichern: Button zeigt 3 Sekunden „Gespeichert ✓" (grün), danach zurück
+- **Mehrfach pro Tag**: Nach dem Speichern wird die Auswahl geleert — man kann sofort eine weitere Einheit erfassen
+- Nach dem Speichern: Button zeigt 3 Sekunden „Gespeichert ✓" (grün), Auswahl wird zurückgesetzt
+- **Heute-Anzeige**: Über den Buttons erscheint „Heute (X×): 🫁 🦵 …" mit allen bereits gespeicherten Einheiten des Tages
 - Kein Browser-Alert, keine Modals
-- Beim App-Start wird die heutige Auswahl automatisch aus IndexedDB geladen
+- Beim App-Start werden alle heutigen Einträge aus dem Store geladen (`todayTrainings`)
 
 ### 2. Dashboard (Tab: Heute)
 - **3 Stats-Kacheln**: Anzahl Trainings, Durchschnitt pro Muskelgruppe, Top-Muskelgruppe
 - **Empfehlungen**: Top 3 vernachlässigte Muskelgruppen (Score-basiert, niedrigster Score = dringendster Bedarf)
-- **Historie**: Letzte 10 Tage, absteigend nach Datum sortiert
+- **Historie**: Letzte 10 Tage, absteigend nach Datum; mehrere Einträge pro Tag werden einzeln angezeigt mit Uhrzeit (HH:MM)
 - **Leerer Zustand**: Emoji + Hinweistext wenn noch keine Trainings vorhanden
 - **Vergangenen Tag nachtragen**: Dezenter Toggle-Link unterhalb der Historie — klappt ein kompaktes Inline-Formular mit Datumspicker (max. gestern) und Muskelgruppen-Pills auf
 - **Alle Daten löschen**: Dezenter Untertext-Link am Ende des Dashboards; nach Klick erscheint ein Inline-Bestätigungsblock mit Trainingsanzahl und Buttons Abbrechen / Ja, alles löschen (kein Modal, kein window.confirm())
