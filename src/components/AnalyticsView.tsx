@@ -30,7 +30,8 @@ export default function AnalyticsView() {
     [allTrainings]
   )
   const colors = useThemeStore((s) => s.getCurrentColors())
-  const axisStyle = { fill: colors.textSecondary, fontSize: 11 }
+  const tickStyle = { fill: colors.textSecondary, fontSize: 11 }
+  const labelStyle = { fill: colors.text, fontSize: 11 }
   const tooltipStyle = {
     backgroundColor: colors.cardBg,
     border: 'none',
@@ -77,10 +78,10 @@ export default function AnalyticsView() {
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={weeklyData} barSize={22}>
             <CartesianGrid vertical={false} stroke="rgba(var(--app-border), 0.06)" strokeDasharray="3 3" />
-            <XAxis dataKey="week" tick={axisStyle} axisLine={false} tickLine={false} />
+            <XAxis dataKey="week" tick={tickStyle} axisLine={false} tickLine={false} />
             <YAxis
               allowDecimals={false}
-              tick={axisStyle}
+              tick={tickStyle}
               axisLine={false}
               tickLine={false}
               width={20}
@@ -100,23 +101,23 @@ export default function AnalyticsView() {
         <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
           Muskelgruppen-Verteilung
         </p>
-        <ResponsiveContainer width="100%" height={280}>
+        <ResponsiveContainer width="100%" height={360}>
           <BarChart layout="vertical" data={muscleData} barSize={14}>
             <CartesianGrid horizontal={false} stroke="rgba(var(--app-border), 0.06)" strokeDasharray="3 3" />
             <XAxis
               type="number"
               allowDecimals={false}
-              tick={axisStyle}
+              tick={tickStyle}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="group"
-              tick={axisStyle}
+              tick={labelStyle}
               axisLine={false}
               tickLine={false}
-              width={68}
+              width={72}
             />
             <Tooltip
               contentStyle={tooltipStyle}
