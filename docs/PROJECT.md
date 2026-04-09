@@ -39,7 +39,7 @@ Ohne Login: vollständig offline im Browser (IndexedDB).
 - **Einzeleintrag löschen**: Swipe nach links (>110px) löscht direkt — kein Button, das Swipen ist die Aktion; dezenter roter Tint + Mülleimer wächst während des Swipens; spring-Snap-Back wenn zu kurz
 
 ### 3. Dashboard (Tab: Dashboard)
-- **Letzte 7 Tage – Wochenübersicht**: 7 Tageskarten nebeneinander (ältester Tag links, heute rechts); jede Karte zeigt die Muskelgruppen-Icons der an diesem Tag trainierten Gruppen; Ruhetage zeigen nur einen kleinen Punkt; heutiger Tag ist mit Primärfarbe hervorgehoben; aktive Tage zählen als Summary-Zeile ("X von 7 Tagen aktiv")
+- **Letzte 7 Tage – Wochenübersicht**: 7 Tageskarten nebeneinander (ältester Tag links, heute rechts); jede Karte zeigt pro trainierter Gruppe das Emoji — wird eine Gruppe mehrfach am selben Tag trainiert, erscheint eine kleine Zahl davor (z. B. „2× 🧘"); Ruhetage zeigen nur einen kleinen Punkt; heutiger Tag ist mit Primärfarbe hervorgehoben; aktive Tage zählen als Summary-Zeile ("X von 7 Tagen aktiv")
 - **Stats-Zeile**: Gesamt-Trainings, aktuelle Streak (aufeinanderfolgende Tage), Lieblingsgruppe
 - **Wöchentliche Aktivität**: Balkendiagramm — Trainingstage pro Woche, letzte 8 Wochen
 - **Muskelgruppen-Verteilung**: Horizontales Balkendiagramm — Häufigkeit jeder Gruppe (alle Zeit)

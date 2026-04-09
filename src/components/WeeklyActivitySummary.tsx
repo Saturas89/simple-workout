@@ -23,8 +23,7 @@ interface Props {
 }
 
 export default function WeeklyActivitySummary({ trainings }: Props) {
-  const { days, groupsByDay, todayStr } = useMemo(() => {
-    // Use local date string to avoid UTC offset shifting the date
+  const { days, countByDay, todayStr } = useMemo(() => {
     const toLocalStr = (d: Date) => {
       const y = d.getFullYear()
       const m = String(d.getMonth() + 1).padStart(2, '0')
@@ -36,42 +35,43 @@ export default function WeeklyActivitySummary({ trainings }: Props) {
     now.setHours(0, 0, 0, 0)
     const todayStr = toLocalStr(now)
 
-    // last 7 days, oldest first
     const days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(now)
       d.setDate(d.getDate() - (6 - i))
       return { str: toLocalStr(d), date: d }
     })
 
-    const groupsByDay: Record<string, MuscleGroup[]> = {}
-    days.forEach(({ str }) => { groupsByDay[str] = [] })
+    // Count how many times each group was trained per day
+    const countByDay: Record<string, Partial<Record<MuscleGroup, number>>> = {}
+    days.forEach(({ str }) => { countByDay[str] = {} })
+
     trainings.forEach((t) => {
-      if (groupsByDay[t.date] !== undefined) {
+      if (countByDay[t.date] !== undefined) {
         t.muscleGroups.forEach((g) => {
-          if (!groupsByDay[t.date].includes(g as MuscleGroup)) {
-            groupsByDay[t.date].push(g as MuscleGroup)
-          }
+          const group = g as MuscleGroup
+          countByDay[t.date][group] = (countByDay[t.date][group] ?? 0) + 1
         })
       }
     })
 
-    return { days, groupsByDay, todayStr }
+    return { days, countByDay, todayStr }
   }, [trainings])
 
-  const totalDaysActive = days.filter(({ str }) => groupsByDay[str].length > 0).length
+  const totalDaysActive = days.filter(({ str }) =>
+    Object.keys(countByDay[str]).length > 0
+  ).length
 
   return (
     <div className="space-y-3">
-      {/* Summary line */}
       <p className="text-xs text-app-text-3">
         <span className="text-app-text font-semibold">{totalDaysActive}</span> von 7 Tagen aktiv
       </p>
 
-      {/* Day cards */}
       <div className="grid grid-cols-7 gap-1.5">
         {days.map(({ str, date }) => {
           const isToday = str === todayStr
-          const groups = groupsByDay[str]
+          const counts = countByDay[str]
+          const groups = Object.keys(counts) as MuscleGroup[]
           const hasActivity = groups.length > 0
 
           return (
@@ -92,32 +92,39 @@ export default function WeeklyActivitySummary({ trainings }: Props) {
               {/* Day label */}
               <span
                 className="text-[10px] font-bold leading-none"
-                style={{
-                  color: isToday
-                    ? 'rgb(var(--app-primary))'
-                    : 'rgb(var(--app-text-3))',
-                }}
+                style={{ color: isToday ? 'rgb(var(--app-primary))' : 'rgb(var(--app-text-3))' }}
               >
                 {DE_DAYS[date.getDay()]}
               </span>
               <span
                 className="text-[9px] leading-none"
                 style={{
-                  color: isToday
-                    ? 'rgb(var(--app-primary))'
-                    : 'rgb(var(--app-text-3))',
+                  color: isToday ? 'rgb(var(--app-primary))' : 'rgb(var(--app-text-3))',
                   opacity: 0.7,
                 }}
               >
                 {date.getDate()}
               </span>
 
-              {/* Muscle icons or rest dot */}
-              <div className="flex flex-col items-center gap-1 mt-0.5 min-h-[20px] justify-center">
+              {/* Activity */}
+              <div className="flex flex-col items-center gap-0.5 mt-0.5 min-h-[20px] justify-center">
                 {hasActivity ? (
-                  groups.map((g) => (
-                    <span key={g} className="text-[11px] leading-none">{MUSCLE_EMOJIS[g]}</span>
-                  ))
+                  groups.map((g) => {
+                    const count = counts[g]!
+                    return (
+                      <div key={g} className="flex items-center gap-0.5 leading-none">
+                        {count > 1 && (
+                          <span
+                            className="text-[8px] font-bold tabular-nums leading-none"
+                            style={{ color: 'rgb(var(--app-primary))' }}
+                          >
+                            {count}×
+                          </span>
+                        )}
+                        <span className="text-[11px] leading-none">{MUSCLE_EMOJIS[g]}</span>
+                      </div>
+                    )
+                  })
                 ) : (
                   <div
                     className="w-1.5 h-1.5 rounded-full"
