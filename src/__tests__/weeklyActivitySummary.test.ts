@@ -1,7 +1,8 @@
 /**
  * Tests for the WeeklyActivitySummary data logic.
- * Spec: Dashboard tab → "Letzte 7 Tage" — 7 Tageskarten, ältester links, heute rechts.
+ * Spec: Dashboard tab → "Letzte 7 Tage" — 7 Tagenkarten, ältester links, heute rechts.
  * Today column highlighted. Trainings must appear on the correct local weekday.
+ * Muscle groups in a single entry are counted individually (duplicates increment the count).
  */
 import { describe, it, expect } from 'vitest'
 import { TrainingEntry } from '@/types'
@@ -26,20 +27,21 @@ function buildDays(now: Date) {
   return { days, todayStr }
 }
 
-function buildGroupsByDay(
+// Mirror the count-based logic from WeeklyActivitySummary
+function buildCountByDay(
   days: { str: string }[],
   trainings: TrainingEntry[],
-): Record<string, string[]> {
-  const groupsByDay: Record<string, string[]> = {}
-  days.forEach(({ str }) => { groupsByDay[str] = [] })
+): Record<string, Partial<Record<string, number>>> {
+  const countByDay: Record<string, Partial<Record<string, number>>> = {}
+  days.forEach(({ str }) => { countByDay[str] = {} })
   trainings.forEach((t) => {
-    if (groupsByDay[t.date] !== undefined) {
+    if (countByDay[t.date] !== undefined) {
       t.muscleGroups.forEach((g) => {
-        if (!groupsByDay[t.date].includes(g)) groupsByDay[t.date].push(g)
+        countByDay[t.date][g] = (countByDay[t.date][g] ?? 0) + 1
       })
     }
   })
-  return groupsByDay
+  return countByDay
 }
 
 function makeEntry(date: string, muscleGroups: string[]): TrainingEntry {
@@ -60,7 +62,6 @@ describe('toLocalStr (timezone-safe date string)', () => {
   })
 
   it('does NOT shift date due to UTC offset (unlike toISOString)', () => {
-    // Simulate midnight local — toISOString would give the previous day in UTC+X
     const d = new Date(2024, 3, 6, 0, 0, 0, 0)
     expect(toLocalStr(d)).toBe('2024-04-06') // must still be the 6th
   })
@@ -105,22 +106,22 @@ describe('buildDays', () => {
   })
 })
 
-// ─── buildGroupsByDay ─────────────────────────────────────────────────────────
+// ─── buildCountByDay ──────────────────────────────────────────────────────────
 
-describe('buildGroupsByDay', () => {
+describe('buildCountByDay', () => {
   it('all days start empty', () => {
     const { days } = buildDays(new Date())
-    const result = buildGroupsByDay(days, [])
-    days.forEach(({ str }) => expect(result[str]).toEqual([]))
+    const result = buildCountByDay(days, [])
+    days.forEach(({ str }) => expect(result[str]).toEqual({}))
   })
 
   it('training on today appears in today slot', () => {
     const now = new Date()
     const { days, todayStr } = buildDays(now)
     const trainings = [makeEntry(todayStr, ['Brust', 'Rücken'])]
-    const result = buildGroupsByDay(days, trainings)
-    expect(result[todayStr]).toContain('Brust')
-    expect(result[todayStr]).toContain('Rücken')
+    const result = buildCountByDay(days, trainings)
+    expect(result[todayStr]['Brust']).toBe(1)
+    expect(result[todayStr]['Rücken']).toBe(1)
   })
 
   it('training older than 7 days is ignored', () => {
@@ -129,20 +130,36 @@ describe('buildGroupsByDay', () => {
     const old = new Date(now)
     old.setDate(old.getDate() - 10)
     const trainings = [makeEntry(toLocalStr(old), ['Bizeps'])]
-    const result = buildGroupsByDay(days, trainings)
-    const total = Object.values(result).flat().length
+    const result = buildCountByDay(days, trainings)
+    const total = Object.values(result).flatMap(Object.values).length
     expect(total).toBe(0)
   })
 
-  it('duplicate muscle groups on same day are deduplicated', () => {
+  it('duplicate muscle groups within the same entry increment the count', () => {
+    const now = new Date()
+    const { days, todayStr } = buildDays(now)
+    const trainings = [makeEntry(todayStr, ['Brust', 'Brust'])]
+    const result = buildCountByDay(days, trainings)
+    expect(result[todayStr]['Brust']).toBe(2)
+  })
+
+  it('duplicate muscle groups across separate entries accumulate', () => {
     const now = new Date()
     const { days, todayStr } = buildDays(now)
     const trainings = [
       makeEntry(todayStr, ['Brust']),
       makeEntry(todayStr, ['Brust']),
     ]
-    const result = buildGroupsByDay(days, trainings)
-    expect(result[todayStr].filter((g) => g === 'Brust')).toHaveLength(1)
+    const result = buildCountByDay(days, trainings)
+    expect(result[todayStr]['Brust']).toBe(2)
+  })
+
+  it('repeat counter: 3× same group in one entry shows count 3', () => {
+    const now = new Date()
+    const { days, todayStr } = buildDays(now)
+    const trainings = [makeEntry(todayStr, ['Beine', 'Beine', 'Beine'])]
+    const result = buildCountByDay(days, trainings)
+    expect(result[todayStr]['Beine']).toBe(3)
   })
 
   it('active day count matches spec summary ("X von 7 Tagen aktiv")', () => {
@@ -153,8 +170,17 @@ describe('buildGroupsByDay', () => {
       makeEntry(todayStr, ['Brust']),
       makeEntry(yesterday, ['Rücken']),
     ]
-    const result = buildGroupsByDay(days, trainings)
-    const activeDays = days.filter(({ str }) => result[str].length > 0).length
+    const result = buildCountByDay(days, trainings)
+    const activeDays = days.filter(({ str }) => Object.keys(result[str]).length > 0).length
     expect(activeDays).toBe(2)
+  })
+
+  it('day with only repeat groups is still counted as active', () => {
+    const now = new Date()
+    const { days, todayStr } = buildDays(now)
+    const trainings = [makeEntry(todayStr, ['Brust', 'Brust'])]
+    const result = buildCountByDay(days, trainings)
+    const activeDays = days.filter(({ str }) => Object.keys(result[str]).length > 0).length
+    expect(activeDays).toBe(1)
   })
 })
