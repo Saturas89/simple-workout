@@ -26,13 +26,13 @@ describe('analyticsService.getWeeklyActivity', () => {
     expect(result).toHaveLength(4)
   })
 
-  it('counts trainings in the current week', () => {
+  it('counts trainings across the last 8 weeks', () => {
     const trainings = [
       makeEntry(localDateStr(0), ['Brust']),
       makeEntry(localDateStr(1), ['Rücken']),
     ]
-    const result = analyticsService.getWeeklyActivity(trainings, 1)
-    // Both entries should be within the current week
+    // Use 8 weeks so entries from today/yesterday are always included
+    const result = analyticsService.getWeeklyActivity(trainings, 8)
     const total = result.reduce((sum, w) => sum + w.count, 0)
     expect(total).toBeGreaterThanOrEqual(1)
   })
@@ -62,9 +62,9 @@ describe('analyticsService.getWeeklyActivity', () => {
 // ─── getMuscleGroupDistribution ───────────────────────────────────────────────
 
 describe('analyticsService.getMuscleGroupDistribution', () => {
-  it('returns an entry for all 9 muscle groups', () => {
+  it('returns an entry for all 12 muscle groups', () => {
     const result = analyticsService.getMuscleGroupDistribution([])
-    expect(result).toHaveLength(9)
+    expect(result).toHaveLength(12)
   })
 
   it('counts frequencies correctly', () => {
@@ -72,6 +72,15 @@ describe('analyticsService.getMuscleGroupDistribution', () => {
       makeEntry(localDateStr(0), ['Brust', 'Rücken']),
       makeEntry(localDateStr(1), ['Brust']),
     ]
+    const result = analyticsService.getMuscleGroupDistribution(trainings)
+    const brust = result.find((b) => b.group === 'Brust')!
+    const rücken = result.find((b) => b.group === 'Rücken')!
+    expect(brust.count).toBe(2)
+    expect(rücken.count).toBe(1)
+  })
+
+  it('counts duplicate muscle groups within a single entry', () => {
+    const trainings = [makeEntry(localDateStr(0), ['Brust', 'Brust', 'Rücken'])]
     const result = analyticsService.getMuscleGroupDistribution(trainings)
     const brust = result.find((b) => b.group === 'Brust')!
     const rücken = result.find((b) => b.group === 'Rücken')!
@@ -159,8 +168,12 @@ describe('analyticsService.getFavoriteMuscleGroup', () => {
     expect(analyticsService.getFavoriteMuscleGroup(trainings)).toBe('Beine')
   })
 
+  it('counts duplicate muscle groups within a single entry toward favorite', () => {
+    const trainings = [makeEntry(localDateStr(0), ['Brust', 'Brust', 'Brust', 'Beine'])]
+    expect(analyticsService.getFavoriteMuscleGroup(trainings)).toBe('Brust')
+  })
+
   it('returns null when all groups have 0 count', () => {
-    // makeEntry with empty groups — technically all frequencies are 0
     const trainings = [makeEntry(localDateStr(0), [])]
     expect(analyticsService.getFavoriteMuscleGroup(trainings)).toBeNull()
   })

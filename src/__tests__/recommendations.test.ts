@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { recommendationService } from '@/services/recommendations'
 import { TrainingEntry, MUSCLE_GROUPS, WEEKLY_GOALS } from '@/types'
 
+const ALL = MUSCLE_GROUPS.length
+
 // Helper: create a TrainingEntry N days ago
 function daysAgo(n: number): string {
   const d = new Date()
@@ -32,7 +34,7 @@ describe('recommendationService.generateRecommendations', () => {
     // Train every group except Eisbaden
     const trained = MUSCLE_GROUPS.filter((g) => g !== 'Eisbaden')
     const trainings = [makeEntry(daysAgo(0), trained)]
-    const recs = recommendationService.generateRecommendations(trainings, 9)
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
     expect(recs[0].muscleGroup).toBe('Eisbaden')
     expect(recs[0].score).toBe(999)
     expect(recs[0].daysSinceLast).toBe(-1)
@@ -41,7 +43,6 @@ describe('recommendationService.generateRecommendations', () => {
 
   it('most overdue group ranks highest', () => {
     // Train ALL groups today except Brust (10 days ago) and Rücken (1 day ago)
-    // so that only these two compete — no never-trained groups with score 999
     const allExceptBrustRücken = MUSCLE_GROUPS.filter((g) => g !== 'Brust' && g !== 'Rücken')
     const trainings = [
       makeEntry(daysAgo(10), ['Brust']),
@@ -56,8 +57,13 @@ describe('recommendationService.generateRecommendations', () => {
   })
 
   it('score = daysSinceLast / (7 / weeklyGoal)', () => {
-    const trainings = [makeEntry(daysAgo(7), ['Brust'])] // weeklyGoal = 2
-    const recs = recommendationService.generateRecommendations(trainings, 9)
+    // Train every group today except Brust (7 days ago), so Brust is the only overdue group
+    const allExceptBrust = MUSCLE_GROUPS.filter((g) => g !== 'Brust')
+    const trainings = [
+      makeEntry(daysAgo(7), ['Brust']),
+      makeEntry(daysAgo(0), allExceptBrust),
+    ]
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
     const brust = recs.find((r) => r.muscleGroup === 'Brust')!
     const expected = 7 / (7 / WEEKLY_GOALS['Brust'])
     expect(brust.score).toBeCloseTo(expected)
@@ -65,32 +71,41 @@ describe('recommendationService.generateRecommendations', () => {
   })
 
   it('trained today shows daysSinceLast = 0 and correct reason', () => {
-    const trainings = [makeEntry(daysAgo(0), ['Bizeps'])]
-    const recs = recommendationService.generateRecommendations(trainings, 9)
+    // Train every group today so Bizeps is in the result set
+    const trainings = [makeEntry(daysAgo(0), MUSCLE_GROUPS as unknown as string[])]
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
     const bizeps = recs.find((r) => r.muscleGroup === 'Bizeps')!
     expect(bizeps.daysSinceLast).toBe(0)
     expect(bizeps.reason).toBe('Heute trainiert')
   })
 
   it('trained yesterday shows correct reason', () => {
-    const trainings = [makeEntry(daysAgo(1), ['Beine'])]
-    const recs = recommendationService.generateRecommendations(trainings, 9)
+    // Train every group yesterday so Beine is in the result set
+    const trainings = [makeEntry(daysAgo(1), MUSCLE_GROUPS as unknown as string[])]
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
     const beine = recs.find((r) => r.muscleGroup === 'Beine')!
     expect(beine.reason).toMatch(/Gestern/)
   })
 
   it('trainedThisWeek counts only Mon–today entries', () => {
-    // Train Mobility today + yesterday
+    // Train Mobility today + yesterday + long ago
     const trainings = [
       makeEntry(daysAgo(0), ['Mobility']),
       makeEntry(daysAgo(1), ['Mobility']),
-      // old entry from 30 days ago — should NOT count
       makeEntry(daysAgo(30), ['Mobility']),
     ]
-    const recs = recommendationService.generateRecommendations(trainings, 9)
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
     const mob = recs.find((r) => r.muscleGroup === 'Mobility')!
     expect(mob.trainedThisWeek).toBeGreaterThanOrEqual(1)
     expect(mob.weeklyGoal).toBe(3)
+  })
+
+  it('repeat entries (same group twice in one entry) count toward trainedThisWeek', () => {
+    const trainings = [makeEntry(daysAgo(0), ['Brust', 'Brust'])]
+    const recs = recommendationService.generateRecommendations(trainings, ALL)
+    const brust = recs.find((r) => r.muscleGroup === 'Brust')!
+    expect(brust.trainedThisWeek).toBe(2)
+    expect(brust.daysSinceLast).toBe(0)
   })
 
   it('each recommendation has all required fields', () => {
@@ -107,7 +122,7 @@ describe('recommendationService.generateRecommendations', () => {
   })
 
   it('works with empty trainings array — all groups score 999', () => {
-    const recs = recommendationService.generateRecommendations([], 9)
+    const recs = recommendationService.generateRecommendations([], ALL)
     recs.forEach((rec) => {
       expect(rec.score).toBe(999)
       expect(rec.daysSinceLast).toBe(-1)
@@ -152,5 +167,12 @@ describe('recommendationService.getWorkoutStats', () => {
     expect(stats.muscleGroupFrequency['Brust']).toBe(2)
     expect(stats.muscleGroupFrequency['Rücken']).toBe(1)
     expect(stats.muscleGroupFrequency['Schulter']).toBe(0)
+  })
+
+  it('muscleGroupFrequency counts duplicates within a single entry', () => {
+    const trainings = [makeEntry(daysAgo(0), ['Brust', 'Brust', 'Rücken'])]
+    const stats = recommendationService.getWorkoutStats(trainings)
+    expect(stats.muscleGroupFrequency['Brust']).toBe(2)
+    expect(stats.muscleGroupFrequency['Rücken']).toBe(1)
   })
 })

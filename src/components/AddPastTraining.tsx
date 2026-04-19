@@ -21,25 +21,37 @@ const yesterday = new Date()
 yesterday.setDate(yesterday.getDate() - 1)
 const maxDate = yesterday.toISOString().split('T')[0]
 
+const MAX_COUNT = 5
+
 export default function AddPastTraining() {
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState(maxDate)
-  const [selected, setSelected] = useState<MuscleGroup[]>([])
+  const [counts, setCounts] = useState<Partial<Record<MuscleGroup, number>>>({})
   const [saved, setSaved] = useState(false)
   const { addTrainingForDate } = useWorkoutStore()
 
-  const toggle = (group: MuscleGroup) =>
-    setSelected((prev) =>
-      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
-    )
+  const increment = (group: MuscleGroup) =>
+    setCounts((prev) => {
+      const current = prev[group] ?? 0
+      const next = current >= MAX_COUNT ? 0 : current + 1
+      if (next === 0) {
+        const { [group]: _, ...rest } = prev
+        return rest as Partial<Record<MuscleGroup, number>>
+      }
+      return { ...prev, [group]: next }
+    })
+
+  const totalSelected = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0)
 
   const handleSave = async () => {
-    if (!date || selected.length === 0) return
-    await addTrainingForDate(date, selected)
+    if (!date || totalSelected === 0) return
+    const muscleGroups = (Object.entries(counts) as [MuscleGroup, number][])
+      .flatMap(([group, count]) => Array<MuscleGroup>(count).fill(group))
+    await addTrainingForDate(date, muscleGroups)
     setSaved(true)
     setTimeout(() => {
       setSaved(false)
-      setSelected([])
+      setCounts({})
       setDate(maxDate)
       setOpen(false)
     }, 1500)
@@ -66,25 +78,33 @@ export default function AddPastTraining() {
           />
 
           <div className="flex flex-wrap gap-1.5">
-            {MUSCLE_GROUPS.map((group) => (
-              <button
-                key={group}
-                onClick={() => toggle(group)}
-                data-active={selected.includes(group)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 ${MUSCLE_COLORS[group]}`}
-              >
-                {group}
-              </button>
-            ))}
+            {MUSCLE_GROUPS.map((group) => {
+              const count = counts[group] ?? 0
+              return (
+                <button
+                  key={group}
+                  onClick={() => increment(group)}
+                  data-active={count > 0}
+                  className={`relative px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 ${MUSCLE_COLORS[group]}`}
+                >
+                  {group}
+                  {count > 1 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-0.5 rounded-full bg-white text-gray-900 text-[10px] font-bold flex items-center justify-center leading-none">
+                      {count}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
           </div>
 
           <button
             onClick={handleSave}
-            disabled={selected.length === 0 || !date}
+            disabled={totalSelected === 0 || !date}
             className={`w-full py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
               saved
                 ? 'bg-green-500 text-white'
-                : selected.length > 0 && date
+                : totalSelected > 0 && date
                   ? 'bg-app-primary hover:bg-app-primary/90 text-white'
                   : 'bg-app-border/5 text-app-text-3 cursor-not-allowed'
             }`}
