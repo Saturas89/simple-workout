@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   BarChart,
   Bar,
@@ -14,6 +15,7 @@ import { useThemeStore } from '@/store/themeStore'
 import { analyticsService } from '@/services/analyticsService'
 
 export default function AnalyticsView() {
+  const { t } = useTranslation()
   const { allTrainings } = useWorkoutStore()
 
   const weeklyData = useMemo(
@@ -44,8 +46,8 @@ export default function AnalyticsView() {
     return (
       <div className="py-10 text-center">
         <p className="text-3xl mb-3">📊</p>
-        <p className="text-app-text-2 text-sm">Noch keine Daten für Analysen.</p>
-        <p className="text-app-text-3 text-xs mt-1">Speichere dein erstes Training im Tab Heute.</p>
+        <p className="text-app-text-2 text-sm">{t('analytics.noData')}</p>
+        <p className="text-app-text-3 text-xs mt-1">{t('analytics.saveFirstWorkout')}</p>
       </div>
     )
   }
@@ -56,24 +58,24 @@ export default function AnalyticsView() {
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
           <p className="text-2xl font-black text-app-text leading-none">{allTrainings.length}</p>
-          <p className="text-app-text-2 text-xs mt-2 leading-tight">Gesamt</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('analytics.total')}</p>
         </div>
         <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
           <p className="text-2xl font-black text-app-text leading-none">{streak}</p>
-          <p className="text-app-text-2 text-xs mt-2 leading-tight">Tage Streak</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('analytics.dayStreak')}</p>
         </div>
         <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px] overflow-hidden">
           <p className="text-sm font-black text-app-text leading-tight truncate">
             {favorite ?? '–'}
           </p>
-          <p className="text-app-text-2 text-xs mt-2 leading-tight">Liebling</p>
+          <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('analytics.favorite')}</p>
         </div>
       </div>
 
       {/* Weekly Activity */}
       <div className="bg-app-inner rounded-2xl p-5">
         <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-          Wöchentliche Aktivität
+          {t('analytics.weeklyActivity')}
         </p>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={weeklyData} barSize={22}>
@@ -89,7 +91,7 @@ export default function AnalyticsView() {
             <Tooltip
               contentStyle={tooltipStyle}
               cursor={{ fill: "rgba(128, 128, 128, 0.05)" }}
-              formatter={(value) => [`${value} Training(s)`, '']}
+              formatter={(value) => [t('analytics.workoutsTooltip', { count: value }), '']}
             />
             <Bar dataKey="count" fill={colors.primary} radius={[4, 4, 0, 0]} />
           </BarChart>
@@ -99,7 +101,7 @@ export default function AnalyticsView() {
       {/* Muscle Group Distribution */}
       <div className="bg-app-inner rounded-2xl p-5">
         <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-          Muskelgruppen-Verteilung
+          {t('analytics.muscleDistribution')}
         </p>
         <ResponsiveContainer width="100%" height={360}>
           <BarChart layout="vertical" data={muscleData} barSize={14}>
@@ -122,7 +124,7 @@ export default function AnalyticsView() {
             <Tooltip
               contentStyle={tooltipStyle}
               cursor={{ fill: "rgba(128, 128, 128, 0.05)" }}
-              formatter={(value) => [`${value}x trainiert`, '']}
+              formatter={(value) => [t('analytics.trainedTooltip', { count: value }), '']}
             />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {muscleData.map((entry) => (

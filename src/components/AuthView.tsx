@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/authStore'
 
 export default function AuthView() {
+  const { t } = useTranslation()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,7 +28,7 @@ export default function AuthView() {
             SW
           </div>
           <h1 className="text-xl font-bold text-white">Simple Workout</h1>
-          <p className="text-gray-400 text-sm mt-1">Dein Training, dein Fortschritt</p>
+          <p className="text-gray-400 text-sm mt-1">{t('auth.tagline')}</p>
         </div>
 
         <div className="space-y-3">
@@ -54,26 +56,26 @@ export default function AuthView() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Mit Google anmelden
+            {t('auth.signInGoogle')}
           </button>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-gray-600 text-xs">oder</span>
+            <span className="text-gray-600 text-xs">{t('auth.or')}</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
           {/* E-Mail Login */}
           <form onSubmit={handleSubmit} className="bg-gray-900 rounded-2xl p-5 space-y-3 border border-white/5">
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {mode === 'login' ? 'Mit E-Mail anmelden' : 'Konto erstellen'}
+              {mode === 'login' ? t('auth.signInEmail') : t('auth.createAccount')}
             </h2>
 
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="E-Mail"
+              placeholder={t('auth.email')}
               required
               className="w-full bg-gray-800 text-white text-sm rounded-xl px-4 py-3 border border-white/5 outline-none focus:border-violet-500 transition-colors placeholder-gray-500"
             />
@@ -81,7 +83,7 @@ export default function AuthView() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Passwort (min. 6 Zeichen)"
+              placeholder={t('auth.password')}
               required
               minLength={6}
               className="w-full bg-gray-800 text-white text-sm rounded-xl px-4 py-3 border border-white/5 outline-none focus:border-violet-500 transition-colors placeholder-gray-500"
@@ -96,7 +98,7 @@ export default function AuthView() {
               disabled={isLoading}
               className="w-full bg-violet-500 hover:bg-violet-400 text-white text-sm font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Laden…' : mode === 'login' ? 'Anmelden' : 'Registrieren'}
+              {isLoading ? t('auth.loading') : mode === 'login' ? t('auth.signIn') : t('auth.register')}
             </button>
           </form>
 
@@ -104,7 +106,7 @@ export default function AuthView() {
             onClick={toggleMode}
             className="w-full text-center text-gray-500 text-xs hover:text-gray-300 transition-colors py-2"
           >
-            {mode === 'login' ? 'Noch kein Konto? Registrieren' : 'Bereits ein Konto? Anmelden'}
+            {mode === 'login' ? t('auth.noAccount') : t('auth.haveAccount')}
           </button>
         </div>
       </div>

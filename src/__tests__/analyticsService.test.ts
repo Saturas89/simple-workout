@@ -46,7 +46,7 @@ describe('analyticsService.getWeeklyActivity', () => {
     })
   })
 
-  it('week labels follow KW format', () => {
+  it('week labels follow locale-specific format (KW N in German)', () => {
     const result = analyticsService.getWeeklyActivity([])
     result.forEach((bar) => {
       expect(bar.week).toMatch(/^KW \d+$/)

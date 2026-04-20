@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
 
@@ -24,6 +25,7 @@ const maxDate = yesterday.toISOString().split('T')[0]
 const MAX_COUNT = 5
 
 export default function AddPastTraining() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState(maxDate)
   const [counts, setCounts] = useState<Partial<Record<MuscleGroup, number>>>({})
@@ -64,7 +66,7 @@ export default function AddPastTraining() {
         className="text-xs text-app-text-3 hover:text-app-text-2 transition-colors flex items-center gap-1"
       >
         <span>{open ? '−' : '+'}</span>
-        <span>Vergangenen Tag nachtragen</span>
+        <span>{t('addPastTraining.toggle')}</span>
       </button>
 
       {open && (
@@ -109,7 +111,7 @@ export default function AddPastTraining() {
                   : 'bg-app-border/5 text-app-text-3 cursor-not-allowed'
             }`}
           >
-            {saved ? 'Gespeichert ✓' : 'Speichern'}
+            {saved ? t('addPastTraining.saved') : t('addPastTraining.save')}
           </button>
         </div>
       )}

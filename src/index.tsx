@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import './i18n/index'
 import './index.css'
 
 // Register Service Worker for PWA functionality

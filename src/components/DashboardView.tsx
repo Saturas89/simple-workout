@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { recommendationService } from '@/services/recommendations'
 import { RecommendationItem, WorkoutStats } from '@/types'
@@ -7,6 +8,7 @@ import SwipeableEntry from '@/components/SwipeableEntry'
 import ClearDataButton from '@/components/ClearDataButton'
 
 export default function DashboardView() {
+  const { t } = useTranslation()
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
   const [last10Days, setLast10Days] = useState<any[]>([])
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([])
@@ -33,8 +35,8 @@ export default function DashboardView() {
       <div>
         <div className="py-8 text-center">
           <p className="text-3xl mb-3">🏋️</p>
-          <p className="text-app-text-2 text-sm">Noch keine Trainings gespeichert.</p>
-          <p className="text-app-text-3 text-xs mt-1">Wähle oben deine Muskelgruppen aus.</p>
+          <p className="text-app-text-2 text-sm">{t('dashboard.noData')}</p>
+          <p className="text-app-text-3 text-xs mt-1">{t('dashboard.selectMuscles')}</p>
         </div>
         <AddPastTraining />
       </div>
@@ -47,17 +49,17 @@ export default function DashboardView() {
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
             <p className="text-2xl font-black text-app-text leading-none">{stats.totalTrainings}</p>
-            <p className="text-app-text-2 text-xs mt-2 leading-tight">Trainings</p>
+            <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('dashboard.workouts')}</p>
           </div>
           <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
             <p className="text-2xl font-black text-app-text leading-none">{stats.average}</p>
-            <p className="text-app-text-2 text-xs mt-2 leading-tight">Ø pro Gruppe</p>
+            <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('dashboard.avgPerGroup')}</p>
           </div>
           <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px] overflow-hidden">
             <p className="text-sm font-black text-app-text leading-tight truncate">
               {stats.topMuscleGroup || '–'}
             </p>
-            <p className="text-app-text-2 text-xs mt-2 leading-tight">Top Gruppe</p>
+            <p className="text-app-text-2 text-xs mt-2 leading-tight">{t('dashboard.topGroup')}</p>
           </div>
         </div>
       )}
@@ -65,7 +67,7 @@ export default function DashboardView() {
       {recommendations.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-3">
-            Nächstes Training
+            {t('dashboard.nextWorkout')}
           </p>
           <div className="space-y-2">
             {recommendations.map((rec) => {
@@ -82,7 +84,7 @@ export default function DashboardView() {
                         {rec.trainedThisWeek}
                         <span className="text-app-text-3 font-normal">/{rec.weeklyGoal}×</span>
                       </p>
-                      <p className="text-[10px] text-app-text-3">diese Woche</p>
+                      <p className="text-[10px] text-app-text-3">{t('dashboard.thisWeek')}</p>
                     </div>
                   </div>
                   {/* Weekly progress bar */}
@@ -108,7 +110,7 @@ export default function DashboardView() {
 
       <div>
         <p className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-3">
-          Letzte 10 Tage
+          {t('dashboard.last10Days')}
         </p>
         <div className="space-y-2">
           {last10Days

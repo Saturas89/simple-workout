@@ -1,15 +1,20 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TrainingEntry } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
 
 // Swipe past this point → entry commits and deletes itself
 const COMMIT_PX = 110
 
+const LOCALE_MAP: Record<string, string> = { de: 'de-DE', en: 'en-US' }
+
 interface Props {
   training: TrainingEntry
 }
 
 export default function SwipeableEntry({ training }: Props) {
+  const { i18n } = useTranslation()
+  const locale = LOCALE_MAP[i18n.language] ?? i18n.language
   const { deleteTraining } = useWorkoutStore()
   const [offset, setOffset] = useState(0)
   const [animate, setAnimate] = useState(false)
@@ -113,14 +118,14 @@ export default function SwipeableEntry({ training }: Props) {
             <p className="text-sm font-semibold text-app-text">
               {(() => {
                 const [y, m, d] = training.date.split('-').map(Number)
-                return new Date(y, m - 1, d).toLocaleDateString('de-DE', {
+                return new Date(y, m - 1, d).toLocaleDateString(locale, {
                   weekday: 'short', day: 'numeric', month: 'short',
                 })
               })()}
             </p>
             {training.createdAt && (
               <span className="text-[11px] text-app-text-3">
-                {new Date(training.createdAt).toLocaleTimeString('de-DE', {
+                {new Date(training.createdAt).toLocaleTimeString(locale, {
                   hour: '2-digit', minute: '2-digit',
                 })}
               </span>

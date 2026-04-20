@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Platform = 'ios' | 'android' | 'other'
 
@@ -17,6 +18,7 @@ function isStandalone(): boolean {
 }
 
 export default function InstallPrompt() {
+  const { t } = useTranslation()
   const [show, setShow] = useState(false)
   const [platform, setPlatform] = useState<Platform>('other')
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
@@ -83,22 +85,22 @@ export default function InstallPrompt() {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-app-text">App installieren</p>
+            <p className="text-sm font-bold text-app-text">{t('install.title')}</p>
 
             {platform === 'android' && (
               <p className="text-xs text-app-text-2 mt-0.5 leading-relaxed">
-                Zum Startbildschirm hinzufügen — funktioniert offline und ohne Browser-Leiste.
+                {t('install.androidDesc')}
               </p>
             )}
 
             {platform === 'ios' && (
               <p className="text-xs text-app-text-2 mt-0.5 leading-relaxed">
-                Tippe auf{' '}
+                Tap{' '}
                 <span className="inline-flex items-center gap-0.5 font-semibold text-app-text">
                   <ShareIcon />
                 </span>{' '}
-                und dann{' '}
-                <span className="font-semibold text-app-text">„Zum Home-Bildschirm"</span>
+                and then{' '}
+                <span className="font-semibold text-app-text">{t('install.iosHomeScreen')}</span>
               </p>
             )}
           </div>
@@ -106,7 +108,7 @@ export default function InstallPrompt() {
           <button
             onClick={handleDismiss}
             className="p-1 text-app-text-3 hover:text-app-text-2 transition-colors shrink-0"
-            aria-label="Schließen"
+            aria-label={t('install.close')}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -119,7 +121,7 @@ export default function InstallPrompt() {
             onClick={handleInstall}
             className="mt-3 w-full bg-app-primary text-white text-xs font-bold py-2.5 rounded-xl hover:bg-app-primary/90 transition-colors"
           >
-            Installieren
+            {t('install.install')}
           </button>
         )}
       </div>

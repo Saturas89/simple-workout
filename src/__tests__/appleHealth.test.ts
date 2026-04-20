@@ -66,21 +66,4 @@ describe('appleHealth', () => {
       expect(localStorage.getItem('apple-health-automation-done')).toBe('true')
     })
   })
-
-  // ─── AUTOMATION_SETUP_STEPS ──────────────────────────────────────────────
-
-  describe('AUTOMATION_SETUP_STEPS', () => {
-    it('has 7 steps', async () => {
-      const { AUTOMATION_SETUP_STEPS } = await import('@/services/appleHealth')
-      expect(AUTOMATION_SETUP_STEPS).toHaveLength(7)
-    })
-
-    it('each step is a non-empty string', async () => {
-      const { AUTOMATION_SETUP_STEPS } = await import('@/services/appleHealth')
-      AUTOMATION_SETUP_STEPS.forEach((step) => {
-        expect(typeof step).toBe('string')
-        expect(step.length).toBeGreaterThan(0)
-      })
-    })
-  })
 })

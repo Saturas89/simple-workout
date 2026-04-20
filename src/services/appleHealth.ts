@@ -31,18 +31,3 @@ export function openShortcutsAutomation(): void {
 export function openShortcutsApp(): void {
   window.location.href = 'shortcuts://'
 }
-
-/**
- * Step-by-step guide to create a daily Shortcuts Automation.
- * Runs every day at a chosen time, writes a Strength Training workout to Health.
- * "Vor Ausführung fragen" must be disabled for fully automatic execution.
- */
-export const AUTOMATION_SETUP_STEPS = [
-  'Öffne die Shortcuts-App und tippe unten auf „Automation".',
-  'Tippe oben rechts auf „+" → „Neue persönliche Automation".',
-  '„Tageszeit" wählen → Uhrzeit festlegen (z. B. 21:00) → „Weiter".',
-  '„Aktion hinzufügen" tippen → Suche „Workout" → „Workout aufzeichnen" wählen.',
-  'Trainingstyp: Krafttraining — Dauer: gewünschte Zeit eintragen (z. B. 45 Min.).',
-  '„Weiter" tippen → den Schalter „Vor Ausführung fragen" AUSSCHALTEN.',
-  '„Fertig" tippen — ab jetzt läuft die Automation täglich automatisch.',
-]

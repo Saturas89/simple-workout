@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import {
   RecommendationItem,
   TrainingEntry,
@@ -104,10 +105,11 @@ function buildReason(
   weeklyGoal: number,
   trainedThisWeek: number,
 ): string {
-  if (daysSinceLast === -1) return 'Noch nie trainiert'
-  if (daysSinceLast === 0) return 'Heute trainiert'
-  if (daysSinceLast === 1) return `Gestern — ${trainedThisWeek}/${weeklyGoal}× diese Woche`
-  return `Vor ${daysSinceLast} Tagen — ${trainedThisWeek}/${weeklyGoal}× diese Woche`
+  const t = i18next.t.bind(i18next)
+  if (daysSinceLast === -1) return t('recommendations.neverTrained')
+  if (daysSinceLast === 0) return t('recommendations.trainedToday')
+  if (daysSinceLast === 1) return t('recommendations.yesterday', { count: trainedThisWeek, goal: weeklyGoal })
+  return t('recommendations.daysAgo', { days: daysSinceLast, count: trainedThisWeek, goal: weeklyGoal })
 }
 
 // Keep old export name for any direct imports

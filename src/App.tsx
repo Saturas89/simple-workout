@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useAuthStore } from '@/store/authStore'
 import DashboardView from '@/components/DashboardView'
@@ -13,6 +14,7 @@ import './App.css'
 type Tab = 'heute' | 'dashboard'
 
 function App() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<Tab>('heute')
   const [showSettings, setShowSettings] = useState(false)
   const { initialize: initWorkout, allTrainings } = useWorkoutStore()
@@ -91,14 +93,14 @@ function App() {
           <>
             <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-                Heute trainieren
+                {t('tabs.trainToday')}
               </h2>
               <MuscleGroupSelector />
             </section>
 
             <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-                Übersicht
+                {t('tabs.overview')}
               </h2>
               <DashboardView />
             </section>
@@ -109,13 +111,13 @@ function App() {
           <div className="space-y-4">
             <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-                Letzte 7 Tage
+                {t('tabs.last7Days')}
               </h2>
               <WeeklyActivitySummary trainings={allTrainings} />
             </section>
             <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
-                Verlauf
+                {t('tabs.history')}
               </h2>
               <AnalyticsView />
             </section>
@@ -133,7 +135,7 @@ function App() {
             }`}
           >
             <span className="text-lg leading-none">🏋️</span>
-            Heute
+            {t('nav.today')}
           </button>
           <button
             onClick={() => setActiveTab('dashboard')}
@@ -142,7 +144,7 @@ function App() {
             }`}
           >
             <span className="text-lg leading-none">📊</span>
-            Dashboard
+            {t('nav.dashboard')}
           </button>
         </div>
       </nav>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
 
@@ -18,6 +19,7 @@ const MUSCLE_CONFIG: Record<MuscleGroup, { base: string; active: string; emoji: 
 }
 
 export default function MuscleGroupSelector() {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<MuscleGroup[]>([])
   const [saved, setSaved] = useState(false)
   const { saveTodaySelection, todayTrainings } = useWorkoutStore()
@@ -48,7 +50,7 @@ export default function MuscleGroupSelector() {
       {todayTrainings.length > 0 && (
         <div className="bg-app-inner rounded-xl px-3 py-2.5 flex items-center gap-2 flex-wrap">
           <span className="text-[11px] text-app-text-3 shrink-0">
-            Heute ({todayTrainings.length}×):
+            {t('muscleSelector.today', { count: todayTrainings.length })}
           </span>
           {trainedTodayGroups.map((g) => (
             <span key={g} className="text-sm leading-none" title={g}>
@@ -91,10 +93,10 @@ export default function MuscleGroupSelector() {
         }`}
       >
         {saved
-          ? '✓ Gespeichert'
+          ? t('muscleSelector.saved')
           : selected.length > 0
-            ? `${selected.length} Gruppe${selected.length > 1 ? 'n' : ''} speichern`
-            : 'Muskelgruppen auswählen'}
+            ? t('muscleSelector.save', { count: selected.length })
+            : t('muscleSelector.placeholder')}
       </button>
     </div>
   )

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MuscleGroup, TrainingEntry } from '@/types'
 
 const MUSCLE_EMOJIS: Record<MuscleGroup, string> = {
@@ -16,13 +17,16 @@ const MUSCLE_EMOJIS: Record<MuscleGroup, string> = {
   Sex:      '💋',
 }
 
-const DE_DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+const LOCALE_MAP: Record<string, string> = { de: 'de-DE', en: 'en-US' }
 
 interface Props {
   trainings: TrainingEntry[]
 }
 
 export default function WeeklyActivitySummary({ trainings }: Props) {
+  const { i18n, t } = useTranslation()
+  const locale = LOCALE_MAP[i18n.language] ?? i18n.language
+
   const { days, countByDay, todayStr } = useMemo(() => {
     const toLocalStr = (d: Date) => {
       const y = d.getFullYear()
@@ -61,10 +65,14 @@ export default function WeeklyActivitySummary({ trainings }: Props) {
     Object.keys(countByDay[str]).length > 0
   ).length
 
+  const formatDay = (date: Date) =>
+    new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date)
+
   return (
     <div className="space-y-3">
       <p className="text-xs text-app-text-3">
-        <span className="text-app-text font-semibold">{totalDaysActive}</span> von 7 Tagen aktiv
+        <span className="text-app-text font-semibold">{totalDaysActive}</span>{' '}
+        {t('weeklyActivity.activeDays')}
       </p>
 
       <div className="grid grid-cols-7 gap-1.5">
@@ -94,7 +102,7 @@ export default function WeeklyActivitySummary({ trainings }: Props) {
                 className="text-[10px] font-bold leading-none"
                 style={{ color: isToday ? 'rgb(var(--app-primary))' : 'rgb(var(--app-text-3))' }}
               >
-                {DE_DAYS[date.getDay()]}
+                {formatDay(date)}
               </span>
               <span
                 className="text-[9px] leading-none"

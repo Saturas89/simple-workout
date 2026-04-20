@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { TrainingEntry, MuscleGroup, MUSCLE_GROUPS } from '@/types'
 
 export interface WeeklyBar {
@@ -34,7 +35,7 @@ function getISOWeek(date: Date): number {
 }
 
 function getWeekKey(date: Date): string {
-  return `KW ${getISOWeek(date)}`
+  return i18next.t('analytics.weekLabel', { week: getISOWeek(date) })
 }
 
 export const analyticsService = {
