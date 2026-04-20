@@ -51,12 +51,9 @@ describe('recommendationService', () => {
     const eisbaden = recommendations.find((r) => r.muscleGroup === 'Eisbaden')
     const brust = recommendations.find((r) => r.muscleGroup === 'Brust')
 
-    // Higher score = more overdue. Eisbaden (goal 3×/week, last 2026-03-29)
-    // has shorter cycle than Brust (goal 2×/week, last 2026-03-25),
-    // so relative to its goal it should be at least as overdue.
+    // Higher score = more overdue. Both must appear in the 9-item list.
     expect(eisbaden?.score).toBeGreaterThanOrEqual(0)
     expect(brust?.score).toBeGreaterThanOrEqual(0)
-    // Both must appear in the 9-item list
     expect(eisbaden).toBeDefined()
     expect(brust).toBeDefined()
   })
@@ -67,5 +64,19 @@ describe('recommendationService', () => {
     expect(stats.totalTrainings).toBe(5)
     expect(stats.average).toBeGreaterThan(0)
     expect(stats.topMuscleGroup).toBe('Mobility')
+  })
+
+  it('reason for never-trained group uses i18n (German test setup)', () => {
+    const recs = recommendationService.generateRecommendations([], 1)
+    // German test-setup → 'Noch nie trainiert'
+    expect(recs[0].reason).toBe('Noch nie trainiert')
+  })
+
+  it('reason string is a non-empty string for any group', () => {
+    const recs = recommendationService.generateRecommendations(mockTrainings, 5)
+    recs.forEach((rec) => {
+      expect(typeof rec.reason).toBe('string')
+      expect(rec.reason.length).toBeGreaterThan(0)
+    })
   })
 })
