@@ -12,19 +12,17 @@ import {
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useThemeStore } from '@/store/themeStore'
 import { analyticsService } from '@/services/analyticsService'
-import { TrainingEntry, MuscleGroup } from '@/types'
+import { filterShowcaseTrainings } from '@/utils/showcase'
 
 export default function AnalyticsView() {
   const { allTrainings } = useWorkoutStore()
   const showcaseMode = useThemeStore((s) => s.showcaseMode)
   const colors = useThemeStore((s) => s.getCurrentColors())
 
-  const filteredTrainings = useMemo((): TrainingEntry[] => {
-    if (!showcaseMode) return allTrainings
-    return allTrainings
-      .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') as MuscleGroup[] }))
-      .filter((t) => t.muscleGroups.length > 0)
-  }, [allTrainings, showcaseMode])
+  const filteredTrainings = useMemo(
+    () => showcaseMode ? filterShowcaseTrainings(allTrainings) : allTrainings,
+    [allTrainings, showcaseMode]
+  )
 
   const weeklyData = useMemo(
     () => analyticsService.getWeeklyActivity(filteredTrainings, 8),

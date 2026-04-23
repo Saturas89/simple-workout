@@ -89,6 +89,49 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             </div>
           </section>
 
+          {/* Showcase Mode */}
+          <section
+            className="rounded-xl p-4"
+            style={{
+              background: showcaseMode
+                ? 'rgb(var(--app-primary) / 0.08)'
+                : 'rgb(var(--app-inner))',
+              border: showcaseMode
+                ? '1px solid rgb(var(--app-primary) / 0.25)'
+                : '1px solid rgb(var(--app-border) / 0.07)',
+            }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-app-text">
+                  Showcase Modus
+                </h3>
+                <p className="text-xs text-app-text-3 mt-1 leading-snug">
+                  Blendet sensible Trainingsarten aus — ideal zum Vorzeigen der App.
+                </p>
+                {showcaseMode && (
+                  <p className="text-xs mt-2 font-semibold text-app-primary">
+                    ✓ Aktiv
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => setShowcaseMode(!showcaseMode)}
+                data-testid="showcase-toggle"
+                className={`relative shrink-0 inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 ${
+                  showcaseMode ? 'bg-app-primary' : 'bg-app-border/25'
+                }`}
+                aria-label="Showcase Modus umschalten"
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                    showcaseMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </section>
+
           {/* Theme Selection */}
           <section>
             <h3 className="text-lg font-bold text-app-text mb-4">🎨 Design</h3>
@@ -111,36 +154,6 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                 </button>
               ))}
             </div>
-          </section>
-
-          {/* Showcase Mode */}
-          <section className="border-t border-app-border/5 pt-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-bold text-app-text">Showcase Modus</h3>
-                <p className="text-xs text-app-text-3 mt-1 leading-snug">
-                  Blendet sensible Einträge aus, damit du die App unbedenklich zeigen kannst.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowcaseMode(!showcaseMode)}
-                className={`relative shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-                  showcaseMode ? 'bg-app-primary' : 'bg-app-border/20'
-                }`}
-                aria-label="Showcase Modus umschalten"
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
-                    showcaseMode ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-            {showcaseMode && (
-              <p className="text-xs mt-2 font-medium" style={{ color: 'rgb(var(--app-primary))' }}>
-                ✓ Aktiv — sensible Trainingsarten sind versteckt
-              </p>
-            )}
           </section>
 
           {/* Apple Health */}

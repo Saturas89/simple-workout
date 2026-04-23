@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useAuthStore } from '@/store/authStore'
 import { useThemeStore } from '@/store/themeStore'
+import { filterShowcaseTrainings } from '@/utils/showcase'
 import DashboardView from '@/components/DashboardView'
 import MuscleGroupSelector from '@/components/MuscleGroupSelector'
 import AnalyticsView from '@/components/AnalyticsView'
@@ -20,12 +21,10 @@ function App() {
   const { user, isLoading: authLoading, initialize: initAuth } = useAuthStore()
   const showcaseMode = useThemeStore((s) => s.showcaseMode)
 
-  const trainingsForWeekly = useMemo(() => {
-    if (!showcaseMode) return allTrainings
-    return allTrainings
-      .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') }))
-      .filter((t) => t.muscleGroups.length > 0)
-  }, [allTrainings, showcaseMode])
+  const trainingsForWeekly = useMemo(
+    () => showcaseMode ? filterShowcaseTrainings(allTrainings) : allTrainings,
+    [allTrainings, showcaseMode]
+  )
 
   useEffect(() => {
     initAuth()

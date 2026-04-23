@@ -2,16 +2,11 @@ import { useState, useEffect } from 'react'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useThemeStore } from '@/store/themeStore'
 import { recommendationService } from '@/services/recommendations'
-import { RecommendationItem, WorkoutStats, TrainingEntry, MuscleGroup } from '@/types'
+import { RecommendationItem, WorkoutStats } from '@/types'
+import { filterShowcaseTrainings } from '@/utils/showcase'
 import AddPastTraining from '@/components/AddPastTraining'
 import SwipeableEntry from '@/components/SwipeableEntry'
 import ClearDataButton from '@/components/ClearDataButton'
-
-function applyShowcaseFilter(trainings: TrainingEntry[]): TrainingEntry[] {
-  return trainings
-    .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') as MuscleGroup[] }))
-    .filter((t) => t.muscleGroups.length > 0)
-}
 
 export default function DashboardView() {
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
@@ -23,8 +18,8 @@ export default function DashboardView() {
   useEffect(() => {
     const loadData = async () => {
       const recent = await getTrainingsFromLastDays(10)
-      const filteredRecent = showcaseMode ? applyShowcaseFilter(recent) : recent
-      const filteredAll = showcaseMode ? applyShowcaseFilter(allTrainings) : allTrainings
+      const filteredRecent = showcaseMode ? filterShowcaseTrainings(recent) : recent
+      const filteredAll = showcaseMode ? filterShowcaseTrainings(allTrainings) : allTrainings
 
       setLast10Days(filteredRecent)
 
