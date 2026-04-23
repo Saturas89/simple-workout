@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { useThemeStore } from '@/store/themeStore'
 import { recommendationService } from '@/services/recommendations'
-import { RecommendationItem, WorkoutStats } from '@/types'
+import { RecommendationItem, WorkoutStats, TrainingEntry, MuscleGroup } from '@/types'
 import AddPastTraining from '@/components/AddPastTraining'
 import SwipeableEntry from '@/components/SwipeableEntry'
 import ClearDataButton from '@/components/ClearDataButton'
 
+function applyShowcaseFilter(trainings: TrainingEntry[]): TrainingEntry[] {
+  return trainings
+    .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') as MuscleGroup[] }))
+    .filter((t) => t.muscleGroups.length > 0)
+}
+
 export default function DashboardView() {
   const { allTrainings, getTrainingsFromLastDays } = useWorkoutStore()
+  const showcaseMode = useThemeStore((s) => s.showcaseMode)
   const [last10Days, setLast10Days] = useState<any[]>([])
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([])
   const [stats, setStats] = useState<WorkoutStats | null>(null)
@@ -15,18 +23,26 @@ export default function DashboardView() {
   useEffect(() => {
     const loadData = async () => {
       const recent = await getTrainingsFromLastDays(10)
-      setLast10Days(recent)
-      // Recommendations use all-time data to find "days since last trained"
-      if (allTrainings.length > 0) {
-        setRecommendations(recommendationService.generateRecommendations(allTrainings, 3))
-        setStats(recommendationService.getWorkoutStats(recent))
+      const filteredRecent = showcaseMode ? applyShowcaseFilter(recent) : recent
+      const filteredAll = showcaseMode ? applyShowcaseFilter(allTrainings) : allTrainings
+
+      setLast10Days(filteredRecent)
+
+      if (filteredAll.length > 0) {
+        // Use unfiltered all-time data for dates, but filter Sex from the results
+        const rawRecs = recommendationService.generateRecommendations(allTrainings, showcaseMode ? 4 : 3)
+        const recs = showcaseMode
+          ? rawRecs.filter((r) => r.muscleGroup !== 'Sex').slice(0, 3)
+          : rawRecs
+        setRecommendations(recs)
+        setStats(recommendationService.getWorkoutStats(filteredRecent))
       } else {
         setRecommendations([])
         setStats(null)
       }
     }
     loadData()
-  }, [allTrainings, getTrainingsFromLastDays])
+  }, [allTrainings, getTrainingsFromLastDays, showcaseMode])
 
   if (last10Days.length === 0) {
     return (

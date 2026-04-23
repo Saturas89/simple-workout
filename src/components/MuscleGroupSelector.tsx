@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MUSCLE_GROUPS, MuscleGroup } from '@/types'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { useThemeStore } from '@/store/themeStore'
 
 const MUSCLE_CONFIG: Record<MuscleGroup, { base: string; active: string; emoji: string }> = {
   Brust:    { emoji: '🫁', base: 'bg-red-500/10 border-red-500/40 text-red-600',         active: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30' },
@@ -21,6 +22,8 @@ export default function MuscleGroupSelector() {
   const [selected, setSelected] = useState<MuscleGroup[]>([])
   const [saved, setSaved] = useState(false)
   const { saveTodaySelection, todayTrainings } = useWorkoutStore()
+  const showcaseMode = useThemeStore((s) => s.showcaseMode)
+  const visibleGroups = showcaseMode ? MUSCLE_GROUPS.filter((g) => g !== 'Sex') : MUSCLE_GROUPS
 
   const toggleMuscleGroup = (group: MuscleGroup) => {
     setSaved(false)
@@ -37,9 +40,12 @@ export default function MuscleGroupSelector() {
     setTimeout(() => setSaved(false), 3000)
   }
 
-  // All unique groups trained today (across all entries)
   const trainedTodayGroups = Array.from(
-    new Set(todayTrainings.flatMap((t) => t.muscleGroups))
+    new Set(
+      todayTrainings
+        .flatMap((t) => t.muscleGroups)
+        .filter((g) => !showcaseMode || g !== 'Sex')
+    )
   )
 
   return (
@@ -59,7 +65,7 @@ export default function MuscleGroupSelector() {
       )}
 
       <div className="grid grid-cols-3 gap-2.5">
-        {MUSCLE_GROUPS.map((group) => {
+        {visibleGroups.map((group) => {
           const isActive = selected.includes(group)
           const cfg = MUSCLE_CONFIG[group]
           return (

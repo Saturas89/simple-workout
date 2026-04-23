@@ -5,9 +5,11 @@ import { Theme, UserProfile, THEMES } from '@/types/theme'
 interface ThemeStore {
   theme: Theme
   profile: UserProfile
+  showcaseMode: boolean
 
   setTheme: (theme: Theme) => void
   updateProfile: (profile: Partial<UserProfile>) => void
+  setShowcaseMode: (mode: boolean) => void
   getThemeConfig: () => typeof THEMES[Theme]
   getCurrentColors: () => typeof THEMES.dark.colors
 }
@@ -22,6 +24,11 @@ export const useThemeStore = create<ThemeStore>()(
       theme: 'dark',
       profile: {
         theme: 'dark',
+      },
+      showcaseMode: false,
+
+      setShowcaseMode: (mode: boolean) => {
+        set({ showcaseMode: mode })
       },
 
       setTheme: (theme: Theme) => {
@@ -56,7 +63,7 @@ export const useThemeStore = create<ThemeStore>()(
     }),
     {
       name: 'theme-store',
-      partialize: (state) => ({ theme: state.theme, profile: state.profile }),
+      partialize: (state) => ({ theme: state.theme, profile: state.profile, showcaseMode: state.showcaseMode }),
       onRehydrateStorage: () => (state) => {
         if (state) applyTheme(state.theme)
       },

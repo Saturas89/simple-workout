@@ -16,7 +16,7 @@ interface SettingsModalProps {
 }
 
 export default function SettingsModal({ onClose }: SettingsModalProps) {
-  const { theme, profile, setTheme, updateProfile } = useThemeStore()
+  const { theme, profile, setTheme, updateProfile, showcaseMode, setShowcaseMode } = useThemeStore()
   const { user, signOut } = useAuthStore()
   const [name, setName] = useState(profile.name || user?.email?.split('@')[0] || '')
   const [automationDone, setAutomationDone] = useState(isAutomationSetup())
@@ -111,6 +111,36 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                 </button>
               ))}
             </div>
+          </section>
+
+          {/* Showcase Mode */}
+          <section className="border-t border-app-border/5 pt-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-app-text">Showcase Modus</h3>
+                <p className="text-xs text-app-text-3 mt-1 leading-snug">
+                  Blendet sensible Einträge aus, damit du die App unbedenklich zeigen kannst.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowcaseMode(!showcaseMode)}
+                className={`relative shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
+                  showcaseMode ? 'bg-app-primary' : 'bg-app-border/20'
+                }`}
+                aria-label="Showcase Modus umschalten"
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                    showcaseMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            {showcaseMode && (
+              <p className="text-xs mt-2 font-medium" style={{ color: 'rgb(var(--app-primary))' }}>
+                ✓ Aktiv — sensible Trainingsarten sind versteckt
+              </p>
+            )}
           </section>
 
           {/* Apple Health */}

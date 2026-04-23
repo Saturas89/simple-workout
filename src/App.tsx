@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useAuthStore } from '@/store/authStore'
+import { useThemeStore } from '@/store/themeStore'
 import DashboardView from '@/components/DashboardView'
 import MuscleGroupSelector from '@/components/MuscleGroupSelector'
 import AnalyticsView from '@/components/AnalyticsView'
@@ -17,6 +18,14 @@ function App() {
   const [showSettings, setShowSettings] = useState(false)
   const { initialize: initWorkout, allTrainings } = useWorkoutStore()
   const { user, isLoading: authLoading, initialize: initAuth } = useAuthStore()
+  const showcaseMode = useThemeStore((s) => s.showcaseMode)
+
+  const trainingsForWeekly = useMemo(() => {
+    if (!showcaseMode) return allTrainings
+    return allTrainings
+      .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') }))
+      .filter((t) => t.muscleGroups.length > 0)
+  }, [allTrainings, showcaseMode])
 
   useEffect(() => {
     initAuth()
@@ -111,7 +120,7 @@ function App() {
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">
                 Letzte 7 Tage
               </h2>
-              <WeeklyActivitySummary trainings={allTrainings} />
+              <WeeklyActivitySummary trainings={trainingsForWeekly} />
             </section>
             <section className="bg-app-card rounded-2xl p-5 border border-app-border/5">
               <h2 className="text-xs font-semibold text-app-text-2 uppercase tracking-wider mb-4">

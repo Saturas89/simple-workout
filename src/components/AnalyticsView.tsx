@@ -12,24 +12,33 @@ import {
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useThemeStore } from '@/store/themeStore'
 import { analyticsService } from '@/services/analyticsService'
+import { TrainingEntry, MuscleGroup } from '@/types'
 
 export default function AnalyticsView() {
   const { allTrainings } = useWorkoutStore()
+  const showcaseMode = useThemeStore((s) => s.showcaseMode)
+  const colors = useThemeStore((s) => s.getCurrentColors())
+
+  const filteredTrainings = useMemo((): TrainingEntry[] => {
+    if (!showcaseMode) return allTrainings
+    return allTrainings
+      .map((t) => ({ ...t, muscleGroups: t.muscleGroups.filter((g) => g !== 'Sex') as MuscleGroup[] }))
+      .filter((t) => t.muscleGroups.length > 0)
+  }, [allTrainings, showcaseMode])
 
   const weeklyData = useMemo(
-    () => analyticsService.getWeeklyActivity(allTrainings, 8),
-    [allTrainings]
+    () => analyticsService.getWeeklyActivity(filteredTrainings, 8),
+    [filteredTrainings]
   )
-  const muscleData = useMemo(
-    () => analyticsService.getMuscleGroupDistribution(allTrainings),
-    [allTrainings]
-  )
-  const streak = useMemo(() => analyticsService.getCurrentStreak(allTrainings), [allTrainings])
+  const muscleData = useMemo(() => {
+    const data = analyticsService.getMuscleGroupDistribution(filteredTrainings)
+    return showcaseMode ? data.filter((d) => d.group !== 'Sex') : data
+  }, [filteredTrainings, showcaseMode])
+  const streak = useMemo(() => analyticsService.getCurrentStreak(filteredTrainings), [filteredTrainings])
   const favorite = useMemo(
-    () => analyticsService.getFavoriteMuscleGroup(allTrainings),
-    [allTrainings]
+    () => analyticsService.getFavoriteMuscleGroup(filteredTrainings),
+    [filteredTrainings]
   )
-  const colors = useThemeStore((s) => s.getCurrentColors())
   const tickStyle = { fill: colors.textSecondary, fontSize: 11 }
   const labelStyle = { fill: colors.text, fontSize: 11 }
   const tooltipStyle = {
@@ -40,7 +49,7 @@ export default function AnalyticsView() {
     fontSize: 12,
   }
 
-  if (allTrainings.length === 0) {
+  if (filteredTrainings.length === 0) {
     return (
       <div className="py-10 text-center">
         <p className="text-3xl mb-3">📊</p>
@@ -55,7 +64,7 @@ export default function AnalyticsView() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
-          <p className="text-2xl font-black text-app-text leading-none">{allTrainings.length}</p>
+          <p className="text-2xl font-black text-app-text leading-none">{filteredTrainings.length}</p>
           <p className="text-app-text-2 text-xs mt-2 leading-tight">Gesamt</p>
         </div>
         <div className="bg-app-inner rounded-xl p-3 flex flex-col justify-between min-h-[80px]">
