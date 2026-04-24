@@ -11,6 +11,7 @@ interface AuthStore {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
+  signInAnonymously: () => Promise<void>
   signOut: () => Promise<void>
   clearError: () => void
 }
@@ -52,6 +53,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
       options: { redirectTo: window.location.origin },
     })
     if (error) set({ error: error.message })
+  },
+
+  signInAnonymously: async () => {
+    set({ error: null, isLoading: true })
+    const { error } = await supabase.auth.signInAnonymously()
+    if (error) set({ error: error.message, isLoading: false })
+    else set({ isLoading: false })
   },
 
   signOut: async () => {

@@ -5,7 +5,7 @@ export default function AuthView() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { signIn, signUp, signInWithGoogle, isLoading, error, clearError } = useAuthStore()
+  const { signIn, signUp, signInWithGoogle, signInAnonymously, isLoading, error, clearError } = useAuthStore()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -105,6 +105,24 @@ export default function AuthView() {
             className="w-full text-center text-gray-500 text-xs hover:text-gray-300 transition-colors py-2"
           >
             {mode === 'login' ? 'Noch kein Konto? Registrieren' : 'Bereits ein Konto? Anmelden'}
+          </button>
+
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-gray-600 text-xs">oder</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+
+          <button
+            onClick={signInAnonymously}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-gray-300 text-sm font-medium py-3 rounded-xl border border-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Geteilte Erinnerung öffnen
           </button>
         </div>
       </div>
